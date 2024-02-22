@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Software Raytracing</title>
+    <style>
+      canvas {
+        width: 300px;
+        height: 300px;
+        image-rendering: pixelated;
+      }
+    </style>
+    <script type="module" src="color.js"></script>
+    <script type="module" src="device.js"></script>
+    <script type="module" src="main.js"></script>
+  </head>
+  <body>
+    <canvas
+      id="frontBuffer"
+      width="128"
+      height="128"
+      style="background-color: black"
+    ></canvas>
+    <br />
+    fps: <span id="averageFPS"></span>
+  </body>
+</html>
