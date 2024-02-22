@@ -56,10 +56,30 @@ export class Device {
     this.backbuffer.data[index + 3] = 1 * 255;
   }
 
+  private hitSphere(center: Point3, radius: number, ray: Ray): number {
+    var oc: Vec3 = ray.orig.subtract(center);
+    var a = ray.dir.dot(ray.dir);
+    var b = 2 * oc.dot(ray.dir);
+    var c = oc.dot(oc) - radius ** 2;
+    var discr = b ** 2 - 4 * a * c;
+
+    if (discr < 0) return -1.0;
+
+    return (-b - Math.sqrt(discr)) / (2.0 * a);
+  }
+
   private rayColor(ray: Ray) {
+    var spherePos = new Point3(0, 0, -1);
+    var t = this.hitSphere(spherePos, 0.5, ray);
+    if (t > 0) {
+      var N: Vec3 = ray.at(t).subtract(spherePos).normalized();
+      var Ncolor: Color3 = new Color3(N.x + 1, N.y + 1, N.z + 1);
+      return Ncolor.scale(0.5);
+    }
+
     var unitDir = ray.dir.normalized();
-    var t: number = 0.5 * (unitDir.y + 1);
-    return Color3.WHITE.scale(1 - t).add(Color3.SKY_BLUE.scale(t));
+    var a: number = 0.5 * (unitDir.y + 1);
+    return Color3.WHITE.scale(1 - a).add(Color3.SKY_BLUE.scale(a));
   }
 
   public render() {

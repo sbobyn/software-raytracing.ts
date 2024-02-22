@@ -16,3 +16,8 @@
 - .mtl loading
 - ray tracing in one weekend part 3
 - experiment with carmack fast inverse square
+- different lights
+  - point
+  - area
+  - spotlight
+  - cone

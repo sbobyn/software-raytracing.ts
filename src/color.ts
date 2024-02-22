@@ -19,4 +19,5 @@ export class Color3 {
 
   public static readonly WHITE = new Color3(1, 1, 1);
   public static readonly SKY_BLUE = new Color3(0.5, 0.7, 1);
+  public static readonly RED = new Color3(1, 0, 0);
 }
