@@ -1,6 +1,8 @@
 import { Device } from "./device.js";
 
 var canvas: HTMLCanvasElement;
+var heightForm: HTMLFormElement;
+
 var device: Device;
 
 // fps vars
@@ -16,8 +18,23 @@ function init() {
 
   divAverageFPS = <HTMLDivElement>document.getElementById("averageFPS");
 
+  heightForm = <HTMLFormElement>document.getElementById("heightForm");
+  heightForm.addEventListener("submit", changeCanvasHeight);
+
   requestAnimationFrame(drawingLoop);
 }
+
+// USER INPUT ------------------------------------------------------
+function changeCanvasHeight(event: Event) {
+  event.preventDefault();
+  var input = <HTMLInputElement>document.getElementById("heightInput");
+  var heightValue: number = parseInt(input.value);
+  console.log("Height submitted:", heightValue);
+
+  device.changeHeight(heightValue);
+}
+
+// ------------------------------------------------------------------
 
 function computeFps(now: number) {
   // fps calcs

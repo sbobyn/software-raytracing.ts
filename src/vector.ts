@@ -1,6 +1,12 @@
 export class Vec3 {
   constructor(public x: number, public y: number, public z: number) {}
 
+  public plusEquals(other: Vec3) {
+    this.x += other.x;
+    this.y += other.y;
+    this.z += other.z;
+  }
+
   public add(other: Vec3): Vec3 {
     return new Vec3(this.x + other.x, this.y + other.y, this.z + other.z);
   }
@@ -19,6 +25,11 @@ export class Vec3 {
 
   public lengthSquared(): number {
     return this.x * this.x + this.y * this.y + this.z * this.z;
+  }
+
+  public normalized(): Vec3 {
+    var length = this.length();
+    return this.scale(1.0 / length);
   }
 
   public dot(other: Vec3): number {
