@@ -2,6 +2,11 @@ import { Device } from "./device.js";
 import { Vec3 } from "./vector.js";
 
 var canvas: HTMLCanvasElement;
+
+// can be larger than canvas pixel buffer
+var canvasScaledWidth: number;
+var canvasScaledHeight: number;
+
 var heightForm: HTMLFormElement;
 
 var device: Device;
@@ -18,8 +23,22 @@ var keyStates: { [key: string]: boolean } = {};
 document.addEventListener("keydown", handleKeyDown, false);
 document.addEventListener("keyup", handleKeyUp, false);
 
+var isDragging = false;
+var lastMouseX = 0;
+var lastMouseY = 0;
+document.addEventListener("mousedown", handleMouseDown, false);
+document.addEventListener("mousemove", handleMouseMove, false);
+document.addEventListener("mouseup", handleMouseUp, false);
+
 function init() {
   canvas = <HTMLCanvasElement>document.getElementById("frontBuffer");
+  let canvasStyle = window.getComputedStyle(canvas);
+  canvasScaledWidth = parseInt(canvasStyle.width, 10);
+  canvasScaledHeight = parseInt(canvasStyle.height, 10);
+
+  console.log("Scaled canvas width:", canvasScaledWidth, "px");
+  console.log("Scaled canvas height:", canvasScaledHeight, "px");
+
   device = new Device(canvas);
 
   divAverageFPS = <HTMLDivElement>document.getElementById("averageFPS");
@@ -46,6 +65,42 @@ function handleKeyDown(event: KeyboardEvent) {
 
 function handleKeyUp(event: KeyboardEvent) {
   keyStates[event.key.toLowerCase()] = false;
+}
+
+function handleMouseDown(event: MouseEvent) {
+  if (
+    event.clientX < 0 ||
+    event.clientX >= canvasScaledWidth ||
+    event.clientY < 0 ||
+    event.clientY >= canvasScaledHeight
+  )
+    return;
+  isDragging = true;
+  lastMouseX = event.clientX;
+  lastMouseY = event.clientY;
+}
+
+function handleMouseMove(event: MouseEvent) {
+  if (!isDragging) return;
+
+  let lookSensitivity = 0.01;
+
+  let deltaX = (event.clientX - lastMouseX) * lookSensitivity;
+  let deltaY = (event.clientY - lastMouseY) * lookSensitivity;
+
+  let currLookAt = device.camera.lookfrom.add(device.camera.lookdir);
+  let newLookAt = currLookAt
+    .add(device.camera.u.scale(deltaX))
+    .add(device.camera.v.scale(-deltaY));
+
+  device.camera.lookAt(newLookAt);
+
+  lastMouseX = event.clientX;
+  lastMouseY = event.clientY;
+}
+
+function handleMouseUp(event: MouseEvent) {
+  isDragging = false;
 }
 
 function changeCameraPosition(deltaTime: number) {
