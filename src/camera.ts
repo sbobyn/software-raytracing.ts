@@ -1,4 +1,7 @@
 import { Point3, Vec3 } from "./vector.js";
+import { Ray } from "./ray.js";
+import { Color3 } from "./color.js";
+import { HitRecord, Hittable } from "./hittable.js";
 
 function degreesToRadians(degrees: number): number {
   return degrees * (Math.PI / 180);
@@ -31,6 +34,19 @@ export class Camera {
     this.aspectRatio = aspectRatio;
 
     this.moveSpeed = 2;
+  }
+
+  public rayColor(ray: Ray, scene: Hittable): Color3 {
+    var rec = new HitRecord();
+    if (scene.hit(ray, 0, Infinity, rec)) {
+      return new Color3(rec.normal!.x, rec.normal!.y, rec.normal!.z)
+        .add(Color3.WHITE)
+        .scale(0.5);
+    }
+
+    var unitDir = ray.dir.normalized();
+    var a: number = 0.5 * (unitDir.y + 1);
+    return Color3.WHITE.scale(1 - a).add(Color3.SKY_BLUE.scale(a));
   }
 
   public lookAt(pos: Point3) {

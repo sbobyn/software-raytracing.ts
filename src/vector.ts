@@ -24,6 +24,10 @@ export class Vec3 {
     this.z -= other.z;
   }
 
+  public negated(): Vec3 {
+    return new Vec3(-this.x, -this.y, -this.z);
+  }
+
   public add(other: Vec3): Vec3 {
     return new Vec3(this.x + other.x, this.y + other.y, this.z + other.z);
   }

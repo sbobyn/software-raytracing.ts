@@ -2,6 +2,8 @@ import { Color3 } from "./color.js";
 import { Ray } from "./ray.js";
 import { Vec3, Point3 } from "./vector.js";
 import { Camera } from "./camera.js";
+import { HittableList } from "./hittable.js";
+import { Sphere } from "./sphere.js";
 
 export class Device {
   // the back buffer size is equal to the number of pixels
@@ -14,7 +16,8 @@ export class Device {
   private aspectRatio: number;
   private viewportHeight: number;
   private viewportWidth: number;
-  public camera: Camera;
+  public camera: Camera; // TODO make private
+  private scene: HittableList;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -27,6 +30,10 @@ export class Device {
     this.viewportWidth = this.viewportHeight * (this.width / this.height);
     this.camera = new Camera();
     this.camera.lookAt(new Point3(0, 0, -1));
+
+    this.scene = new HittableList();
+    this.scene.add(new Sphere(new Point3(0, 0, -1), 0.5));
+    this.scene.add(new Sphere(new Point3(0, -100.5, -1), 100));
   }
 
   public changeHeight(newHeight: number) {
@@ -66,32 +73,6 @@ export class Device {
     this.backbuffer.data[index + 3] = 1 * 255;
   }
 
-  private hitSphere(center: Point3, radius: number, ray: Ray): number {
-    var oc: Vec3 = ray.orig.subtract(center);
-    var a = ray.dir.lengthSquared();
-    var half_b = oc.dot(ray.dir);
-    var c = oc.lengthSquared() - radius * radius;
-    var discr = half_b * half_b - a * c;
-
-    if (discr < 0) return -1.0;
-
-    return (-half_b - Math.sqrt(discr)) / a;
-  }
-
-  private rayColor(ray: Ray) {
-    var spherePos = new Point3(0, 0, -1);
-    var t = this.hitSphere(spherePos, 0.5, ray);
-    if (t > 0) {
-      var N: Vec3 = ray.at(t).subtract(spherePos).normalized();
-      var Ncolor: Color3 = new Color3(N.x + 1, N.y + 1, N.z + 1);
-      return Ncolor.scale(0.5);
-    }
-
-    var unitDir = ray.dir.normalized();
-    var a: number = 0.5 * (unitDir.y + 1);
-    return Color3.WHITE.scale(1 - a).add(Color3.SKY_BLUE.scale(a));
-  }
-
   public render() {
     // origin at top left
     var viewportU = this.camera.u.scale(this.viewportWidth);
@@ -117,7 +98,7 @@ export class Device {
       for (var i = 0; i < this.width; i++) {
         pixel_ij.plusEquals(pixeldeltaU);
         ray.dir = pixel_ij.subtract(this.camera.lookfrom);
-        pixelColor = this.rayColor(ray);
+        pixelColor = this.camera.rayColor(ray, this.scene);
         this.writePixel(i, j, pixelColor);
       }
     }
