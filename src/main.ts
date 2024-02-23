@@ -34,6 +34,21 @@ function changeCanvasHeight(event: Event) {
   device.changeHeight(heightValue);
 }
 
+// W
+function moveForward() {}
+
+// A
+function strafeLeft() {}
+
+// S
+function moveBackward() {}
+
+// D
+function strafeRight() {}
+
+// Click and Drag
+function changeCameraDirection() {}
+
 // ------------------------------------------------------------------
 
 function computeFps(now: number) {

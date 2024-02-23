@@ -1,6 +1,7 @@
 import { Color3 } from "./color.js";
 import { Ray } from "./ray.js";
 import { Vec3, Point3 } from "./vector.js";
+import { Camera } from "./camera.js";
 
 export class Device {
   // the back buffer size is equal to the number of pixels
@@ -13,6 +14,7 @@ export class Device {
   private aspectRatio: number;
   private viewportHeight: number;
   private viewportWidth: number;
+  private camera: Camera;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -23,6 +25,8 @@ export class Device {
     this.aspectRatio = this.width / this.height;
     this.viewportHeight = 2.0;
     this.viewportWidth = this.viewportHeight * (this.width / this.height);
+    this.camera = new Camera();
+    this.camera.lookAt(new Point3(0, 0, -1));
   }
 
   public changeHeight(newHeight: number) {
@@ -58,14 +62,14 @@ export class Device {
 
   private hitSphere(center: Point3, radius: number, ray: Ray): number {
     var oc: Vec3 = ray.orig.subtract(center);
-    var a = ray.dir.dot(ray.dir);
-    var b = 2 * oc.dot(ray.dir);
-    var c = oc.dot(oc) - radius ** 2;
-    var discr = b ** 2 - 4 * a * c;
+    var a = ray.dir.lengthSquared();
+    var half_b = oc.dot(ray.dir);
+    var c = oc.lengthSquared() - radius * radius;
+    var discr = half_b * half_b - a * c;
 
     if (discr < 0) return -1.0;
 
-    return (-b - Math.sqrt(discr)) / (2.0 * a);
+    return (-half_b - Math.sqrt(discr)) / a;
   }
 
   private rayColor(ray: Ray) {
@@ -83,18 +87,16 @@ export class Device {
   }
 
   public render() {
-    // camera
-    var focalLength: number = 1.0;
-    var cameraPos = new Point3(0, 0, 0);
+    // origin at top left
+    var viewportU = this.camera.u.scale(this.viewportWidth);
+    var viewportV = this.camera.v.scale(-this.viewportHeight);
 
-    var viewportU = new Vec3(this.viewportWidth, 0, 0);
-    var viewportV = new Vec3(0, -this.viewportHeight, 0);
-
+    // distance to next pixel
     var pixeldeltaU: Vec3 = viewportU.scale(1 / this.width);
     var pixeldeltaV: Vec3 = viewportV.scale(1 / this.height);
 
-    var viewportUpperLeft: Vec3 = cameraPos
-      .subtract(new Vec3(0, 0, focalLength))
+    var viewportUpperLeft = this.camera.lookfrom
+      .add(this.camera.lookdir.scale(this.camera.focalLength))
       .subtract(viewportU.scale(0.5))
       .subtract(viewportV.scale(0.5));
     var pixel_00: Point3 = viewportUpperLeft.add(
@@ -102,13 +104,13 @@ export class Device {
     );
 
     var pixel_ij: Point3;
-    var ray = new Ray(cameraPos, new Vec3(0, 0, 0)); // initial dir is a placeholder
+    var ray = new Ray(this.camera.lookfrom, new Vec3(0, 0, 0)); // initial dir is a placeholder
     var pixelColor: Color3;
     for (var j = 0; j < this.height; j++) {
       pixel_ij = pixel_00.add(pixeldeltaV.scale(j));
       for (var i = 0; i < this.width; i++) {
         pixel_ij.plusEquals(pixeldeltaU);
-        ray.dir = pixel_ij.subtract(cameraPos);
+        ray.dir = pixel_ij.subtract(this.camera.lookfrom);
         pixelColor = this.rayColor(ray);
         this.writePixel(i, j, pixelColor);
       }

@@ -1,13 +1,5 @@
 export class Color3 {
-  r: number;
-  g: number;
-  b: number;
-
-  constructor(r: number, g: number, b: number) {
-    this.r = r;
-    this.g = g;
-    this.b = b;
-  }
+  constructor(public r: number, public g: number, public b: number) {}
 
   public add(other: Color3) {
     return new Color3(this.r + other.r, this.g + other.g, this.b + other.b);
