@@ -1,9 +1,14 @@
 import { HitRecord, Hittable } from "./hittable";
+import { Material } from "./material";
 import { Ray } from "./ray";
 import { Point3, Vec3 } from "./vector";
 
 export class Sphere implements Hittable {
-  constructor(public position: Point3, public radius: number) {}
+  constructor(
+    public position: Point3,
+    public radius: number,
+    public material: Material
+  ) {}
 
   public hit(ray: Ray, tmin: number, tmax: number, rec: HitRecord): boolean {
     var oc: Vec3 = ray.orig.subtract(this.position);
@@ -27,6 +32,7 @@ export class Sphere implements Hittable {
     rec.p = ray.at(root);
     var outwardNormal = rec.p.subtract(this.position).scale(1 / this.radius);
     rec.setFaceNormal(ray, outwardNormal);
+    rec.material = this.material;
 
     return true;
   }

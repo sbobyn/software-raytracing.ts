@@ -1,5 +1,20 @@
 # TODO
 
+## UI
+
+- bounce depth
+- gamma correction toggle
+- anti aliasing toggle
+- scenes
+  - scene loading
+  - random scene
+  - scene editor (add / remove objects, lights)
+- number of rays per pixel
+- number of reflected rays
+- camera settings
+  - fov
+  - focal length
+
 ## Ray tracing in one weekend
 
 ### Part 1
@@ -42,19 +57,6 @@ Experiment with different types of lights
 - spotlight
 - cone
 
-## UI
-
-- scenes
-  - scene loading
-  - random scene
-  - scene editor (add / remove objects, lights)
-- bounce depth
-- number of rays per pixel
-- number of reflected rays
-- camera settings
-  - fov
-  - focal length
-
 ## Accumulating samples over time
 
 - improve performance by averaging samples over time instead of clearing the canvas every frame
@@ -69,6 +71,9 @@ Experiment with different types of lights
 
 - profile code
 - reduce memory allocations (lots due to vector implementation)
+- remove recursion
+- parallelize pixel computations
+- replace vector math with fast impl
 
 ## Other experiments
 

@@ -36,12 +36,16 @@ export class Camera {
     this.moveSpeed = 2;
   }
 
-  public rayColor(ray: Ray, scene: Hittable): Color3 {
+  public rayColor(ray: Ray, scene: Hittable, depth: number): Color3 {
+    if (depth < 0) return Color3.BLACK;
+
     var rec = new HitRecord();
-    if (scene.hit(ray, 0, Infinity, rec)) {
-      return new Color3(rec.normal!.x, rec.normal!.y, rec.normal!.z)
-        .add(Color3.WHITE)
-        .scale(0.5);
+    if (scene.hit(ray, 0.001, Infinity, rec)) {
+      var scattered = new Ray(rec.p!, new Vec3(0, 0, 0)); // placeholder dir
+      var attenuation = Color3.BLACK; // placeholder
+      if (rec.material!.scatter(ray, rec, attenuation, scattered))
+        return attenuation.mul(this.rayColor(scattered, scene, depth - 1));
+      return Color3.BLACK;
     }
 
     var unitDir = ray.dir.normalized();

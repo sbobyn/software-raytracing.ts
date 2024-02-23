@@ -21,7 +21,7 @@
     <br />
     fps: <span id="averageFPS"></span>
     <form id="heightForm" action="/submit-form" method="post">
-      <label for="heightInput">Number of pixels:<span id="sliderValue">150</span></label></label>
+      <label for="heightInput">Number of pixels:<span id="heightSliderValue">150</span></label></label>
       <input
         type="range"
         id="heightInput"
@@ -30,7 +30,21 @@
         max="300"
         step="10"
         value="150"
-        oninput="document.getElementById('sliderValue').textContent = value"
+        oninput="document.getElementById('heightSliderValue').textContent = value"
+      />
+      <button type="submit">Submit</button>
+    </form>
+    <form id="bounceDepthForm" action="/submit-form" method="post">
+      <label for="bounceDepthInput">Number of bounces:<span id="bounceDepthSliderValue">2</span></label></label>
+      <input
+        type="range"
+        id="bounceDepthInput"
+        name="bounceDepthInput"
+        min="0"
+        max="10"
+        step="1"
+        value="2"
+        oninput="document.getElementById('bounceDepthSliderValue').textContent = value"
       />
       <button type="submit">Submit</button>
     </form>

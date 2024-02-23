@@ -8,6 +8,7 @@ var canvasScaledWidth: number;
 var canvasScaledHeight: number;
 
 var heightForm: HTMLFormElement;
+var bounceDepthForm: HTMLFormElement;
 
 var device: Device;
 
@@ -46,6 +47,9 @@ function init() {
   heightForm = <HTMLFormElement>document.getElementById("heightForm");
   heightForm.addEventListener("submit", changeCanvasHeight);
 
+  bounceDepthForm = <HTMLFormElement>document.getElementById("bounceDepthForm");
+  bounceDepthForm.addEventListener("submit", changeBounceDepth);
+
   requestAnimationFrame(drawingLoop);
 }
 
@@ -57,6 +61,15 @@ function changeCanvasHeight(event: Event) {
   console.log("Height submitted:", heightValue);
 
   device.changeHeight(heightValue);
+}
+
+function changeBounceDepth(event: Event) {
+  event.preventDefault();
+  var input = <HTMLInputElement>document.getElementById("bounceDepthInput");
+  var bounceDepthValue: number = parseInt(input.value);
+  console.log("Bounce depth submitted:", bounceDepthValue);
+
+  device.changeMaxDepth(bounceDepthValue);
 }
 
 function handleKeyDown(event: KeyboardEvent) {

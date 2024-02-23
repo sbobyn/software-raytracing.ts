@@ -4,6 +4,7 @@ import { Vec3, Point3 } from "./vector.js";
 import { Camera } from "./camera.js";
 import { HittableList } from "./hittable.js";
 import { Sphere } from "./sphere.js";
+import { Metal } from "./material.js";
 
 export class Device {
   // the back buffer size is equal to the number of pixels
@@ -18,6 +19,7 @@ export class Device {
   private viewportWidth: number;
   public camera: Camera; // TODO make private
   private scene: HittableList;
+  private maxDepth: number;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -32,8 +34,20 @@ export class Device {
     this.camera.lookAt(new Point3(0, 0, -1));
 
     this.scene = new HittableList();
-    this.scene.add(new Sphere(new Point3(0, 0, -1), 0.5));
-    this.scene.add(new Sphere(new Point3(0, -100.5, -1), 100));
+    var groundMat = new Metal(new Color3(0.8, 0.8, 0));
+    var leftMat = new Metal(new Color3(0.6, 0.0, 0));
+    var rightMat = new Metal(new Color3(0.0, 0.0, 0.4));
+    var centerMat = new Metal(new Color3(0.8, 0.8, 0.8));
+    this.scene.add(new Sphere(new Point3(0, 0, -1), 0.5, centerMat));
+    this.scene.add(new Sphere(new Point3(2, 0, -1), 0.5, rightMat));
+    this.scene.add(new Sphere(new Point3(-2, 0, -1), 0.5, leftMat));
+    this.scene.add(new Sphere(new Point3(0, -100.5, -1), 100, groundMat));
+
+    this.maxDepth = 2;
+  }
+
+  public changeMaxDepth(newDepth: number) {
+    this.maxDepth = newDepth;
   }
 
   public changeHeight(newHeight: number) {
@@ -98,7 +112,7 @@ export class Device {
       for (var i = 0; i < this.width; i++) {
         pixel_ij.plusEquals(pixeldeltaU);
         ray.dir = pixel_ij.subtract(this.camera.lookfrom);
-        pixelColor = this.camera.rayColor(ray, this.scene);
+        pixelColor = this.camera.rayColor(ray, this.scene, this.maxDepth);
         this.writePixel(i, j, pixelColor);
       }
     }

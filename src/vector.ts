@@ -28,6 +28,10 @@ export class Vec3 {
     return new Vec3(-this.x, -this.y, -this.z);
   }
 
+  public reflect(N: Vec3): Vec3 {
+    return this.subtract(N.scale(2 * this.dot(N)));
+  }
+
   public add(other: Vec3): Vec3 {
     return new Vec3(this.x + other.x, this.y + other.y, this.z + other.z);
   }

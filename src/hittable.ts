@@ -1,12 +1,14 @@
 import { Vec3, Point3 } from "./vector";
 import { Ray } from "./ray";
+import { Material } from "./material";
 
 export class HitRecord {
   constructor(
     public p?: Point3,
     public normal?: Vec3, // always points againt hit ray
     public t?: number,
-    public frontface?: boolean
+    public frontface?: boolean,
+    public material?: Material
   ) {}
 
   public setFaceNormal(ray: Ray, outwardNormal: Vec3) {
@@ -21,6 +23,7 @@ export class HitRecord {
     this.normal = other.normal;
     this.t = other.t;
     this.frontface = other.frontface;
+    this.material = other.material;
   }
 }
 
