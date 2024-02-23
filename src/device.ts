@@ -14,7 +14,7 @@ export class Device {
   private aspectRatio: number;
   private viewportHeight: number;
   private viewportWidth: number;
-  private camera: Camera;
+  public camera: Camera;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -36,6 +36,12 @@ export class Device {
     this.canvas.width = this.width;
     this.viewportHeight = 2.0;
     this.viewportWidth = this.viewportHeight * (this.width / this.height);
+  }
+
+  public moveCamera(direction: Vec3, deltaTime: number) {
+    this.camera.lookfrom.plusEquals(
+      direction.scale(this.camera.moveSpeed * deltaTime)
+    );
   }
 
   public clear() {

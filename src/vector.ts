@@ -1,10 +1,27 @@
 export class Vec3 {
   constructor(public x: number, public y: number, public z: number) {}
 
+  public static readonly ZERO = new Vec3(0, 0, 0);
+
+  public equals(other: Vec3): boolean {
+    let eps = 0.0001;
+    return (
+      Math.abs(this.x - other.x) < eps &&
+      Math.abs(this.y - other.y) < eps &&
+      Math.abs(this.z - other.z) < eps
+    );
+  }
+
   public plusEquals(other: Vec3) {
     this.x += other.x;
     this.y += other.y;
     this.z += other.z;
+  }
+
+  public minusEquals(other: Vec3) {
+    this.x -= other.x;
+    this.y -= other.y;
+    this.z -= other.z;
   }
 
   public add(other: Vec3): Vec3 {

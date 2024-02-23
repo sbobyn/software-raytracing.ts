@@ -1,4 +1,5 @@
 import { Device } from "./device.js";
+import { Vec3 } from "./vector.js";
 
 var canvas: HTMLCanvasElement;
 var heightForm: HTMLFormElement;
@@ -11,6 +12,11 @@ var prevTime = performance.now();
 var lastFPSValues: number[] = new Array(60);
 
 document.addEventListener("DOMContentLoaded", init, false);
+
+// input handling
+var keyStates: { [key: string]: boolean } = {};
+document.addEventListener("keydown", handleKeyDown, false);
+document.addEventListener("keyup", handleKeyUp, false);
 
 function init() {
   canvas = <HTMLCanvasElement>document.getElementById("frontBuffer");
@@ -34,17 +40,26 @@ function changeCanvasHeight(event: Event) {
   device.changeHeight(heightValue);
 }
 
-// W
-function moveForward() {}
+function handleKeyDown(event: KeyboardEvent) {
+  keyStates[event.key.toLowerCase()] = true;
+}
 
-// A
-function strafeLeft() {}
+function handleKeyUp(event: KeyboardEvent) {
+  keyStates[event.key.toLowerCase()] = false;
+}
 
-// S
-function moveBackward() {}
+function changeCameraPosition(deltaTime: number) {
+  let moveDir = new Vec3(0, 0, 0);
+  if (keyStates["w"]) moveDir.plusEquals(device.camera.lookdir);
+  if (keyStates["s"]) moveDir.minusEquals(device.camera.lookdir);
+  if (keyStates["a"]) moveDir.minusEquals(device.camera.u);
+  if (keyStates["d"]) moveDir.plusEquals(device.camera.u);
 
-// D
-function strafeRight() {}
+  if (!moveDir.equals(Vec3.ZERO)) {
+    moveDir = moveDir.normalized();
+    device.moveCamera(moveDir, deltaTime);
+  }
+}
 
 // Click and Drag
 function changeCameraDirection() {}
@@ -72,7 +87,9 @@ function computeFps(now: number) {
 }
 
 function drawingLoop(now: number) {
+  let deltaTime = (now - prevTime) / 1000;
   computeFps(now);
+  changeCameraPosition(deltaTime);
 
   device.clear(); // clear the front buffer and flush into back buffer
   device.render(); // write to back buffer

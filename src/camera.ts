@@ -14,6 +14,7 @@ export class Camera {
   public focalLength: number;
   public vfov: number; // vertical field of view
   public aspectRatio: number;
+  public moveSpeed: number;
 
   constructor(vfov: number = 90, aspectRatio: number = 16 / 9) {
     this.lookfrom = new Point3(0, 0, 0);
@@ -28,6 +29,8 @@ export class Camera {
     this.focalLength = 1.0;
     this.vfov = degreesToRadians(vfov);
     this.aspectRatio = aspectRatio;
+
+    this.moveSpeed = 2;
   }
 
   public lookAt(pos: Point3) {
