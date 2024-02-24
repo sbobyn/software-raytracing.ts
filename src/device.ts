@@ -4,7 +4,7 @@ import { Vec3, Point3 } from "./vector.js";
 import { Camera } from "./camera.js";
 import { HittableList } from "./hittable.js";
 import { Sphere } from "./sphere.js";
-import { Metal } from "./material.js";
+import { Diffuse, Metal } from "./material.js";
 
 export class Device {
   // the back buffer size is equal to the number of pixels
@@ -35,7 +35,7 @@ export class Device {
     this.camera.lookAt(new Point3(0, 0, -1));
 
     this.scene = new HittableList();
-    var groundMat = new Metal(new Color3(0.8, 0.8, 0));
+    var groundMat = new Diffuse(new Color3(0.5, 0.5, 0.5));
     var leftMat = new Metal(new Color3(0.6, 0.0, 0));
     var rightMat = new Metal(new Color3(0.0, 0.0, 0.4));
     var centerMat = new Metal(new Color3(0.8, 0.8, 0.8));

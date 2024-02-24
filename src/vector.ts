@@ -1,7 +1,42 @@
+import { randomInRange } from "./utils.js";
+
 export class Vec3 {
   constructor(public x: number, public y: number, public z: number) {}
 
   public static readonly ZERO = new Vec3(0, 0, 0);
+
+  public static randomInUnitSphere(): Vec3 {
+    var p = new Vec3(
+      randomInRange(-1, 1),
+      randomInRange(-1, 1),
+      randomInRange(-1, 1)
+    );
+    while (p.lengthSquared() > 1) {
+      p.x = randomInRange(-1, 1);
+      p.y = randomInRange(-1, 1);
+      p.z = randomInRange(-1, 1);
+    }
+    return p;
+  }
+
+  public static randomUnitVector(): Vec3 {
+    // uses rejectionh method to avoid distribution bias
+    return Vec3.randomInUnitSphere().normalized();
+  }
+
+  public static randomOnHemisphere(normal: Vec3): Vec3 {
+    var onUnitSphere = Vec3.randomUnitVector();
+    if (normal.dot(onUnitSphere) > 0) {
+      // already in the hemisphere
+      return onUnitSphere;
+    } else {
+      // in the other hemisphere
+      onUnitSphere.x = -onUnitSphere.x;
+      onUnitSphere.y = -onUnitSphere.y;
+      onUnitSphere.z = -onUnitSphere.z;
+      return onUnitSphere;
+    }
+  }
 
   public equals(other: Vec3): boolean {
     let eps = 0.0001;

@@ -10,7 +10,14 @@
     - textured random ball scene
     - cornell box
     - in one weekend pt 2 scene
-  - scene editor (add / remove objects, lights)
+  - scene editor
+    - add/remove objects, lights
+    - move objects
+    - apply materials
+    - material editor
+    - click on objects
+      - drag and move
+      - open material editor
   - move lights
 - number of rays per pixel
 - number of reflected rays
