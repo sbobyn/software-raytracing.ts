@@ -2,13 +2,16 @@
 
 ## UI
 
-- bounce depth
 - gamma correction toggle
 - anti aliasing toggle
 - scenes
   - scene loading
-  - random scene
+    - random ball scene
+    - textured random ball scene
+    - cornell box
+    - in one weekend pt 2 scene
   - scene editor (add / remove objects, lights)
+  - move lights
 - number of rays per pixel
 - number of reflected rays
 - camera settings
@@ -73,6 +76,8 @@ Experiment with different types of lights
 - reduce memory allocations (lots due to vector implementation)
 - remove recursion
 - parallelize pixel computations
+  - CPU multithreading: get N images from N threads and average
+  - GPU multithreading: compute each pixel's color in parallel or each ray in parallel
 - replace vector math with fast impl
 
 ## Other experiments

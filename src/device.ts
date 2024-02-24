@@ -20,6 +20,7 @@ export class Device {
   public camera: Camera; // TODO make private
   private scene: HittableList;
   private maxDepth: number;
+  private numSamples: number;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -44,6 +45,7 @@ export class Device {
     this.scene.add(new Sphere(new Point3(0, -100.5, -1), 100, groundMat));
 
     this.maxDepth = 2;
+    this.numSamples = 1;
   }
 
   public changeMaxDepth(newDepth: number) {
@@ -57,6 +59,10 @@ export class Device {
     this.canvas.width = this.width;
     this.viewportHeight = 2.0;
     this.viewportWidth = this.viewportHeight * (this.width / this.height);
+  }
+
+  public changeNumSamples(newNum: number) {
+    this.numSamples = newNum;
   }
 
   public moveCamera(direction: Vec3, deltaTime: number) {
@@ -87,6 +93,12 @@ export class Device {
     this.backbuffer.data[index + 3] = 1 * 255;
   }
 
+  public pixelOffset(pixeldu: Vec3, pixeldv: Vec3): Vec3 {
+    var sx = -0.5 + Math.random();
+    var sy = -0.5 + Math.random();
+    return pixeldu.scale(sx).add(pixeldv.scale(sy));
+  }
+
   public render() {
     // origin at top left
     var viewportU = this.camera.u.scale(this.viewportWidth);
@@ -110,10 +122,21 @@ export class Device {
     for (var j = 0; j < this.height; j++) {
       pixel_ij = pixel_00.add(pixeldeltaV.scale(j));
       for (var i = 0; i < this.width; i++) {
+        pixelColor = new Color3(0, 0, 0);
         pixel_ij.plusEquals(pixeldeltaU);
-        ray.dir = pixel_ij.subtract(this.camera.lookfrom);
-        pixelColor = this.camera.rayColor(ray, this.scene, this.maxDepth);
-        this.writePixel(i, j, pixelColor);
+        for (var sample = 0; sample < this.numSamples; sample++) {
+          ray.dir = pixel_ij.subtract(this.camera.lookfrom);
+          // TODO : accumulate samples over time instead of clearing and resampling every frame
+          if (this.numSamples > 1) {
+            // prevents jitter when using one sample per pixel
+            // since we don't want a random offset if only taking one sample
+            ray.dir.plusEquals(this.pixelOffset(pixeldeltaU, pixeldeltaV));
+          }
+          pixelColor.plusEquals(
+            this.camera.rayColor(ray, this.scene, this.maxDepth)
+          );
+        }
+        this.writePixel(i, j, pixelColor.scale(1 / this.numSamples));
       }
     }
   }

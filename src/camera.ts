@@ -2,10 +2,7 @@ import { Point3, Vec3 } from "./vector.js";
 import { Ray } from "./ray.js";
 import { Color3 } from "./color.js";
 import { HitRecord, Hittable } from "./hittable.js";
-
-function degreesToRadians(degrees: number): number {
-  return degrees * (Math.PI / 180);
-}
+import { degreesToRadians } from "./utils.js";
 
 export class Camera {
   public lookfrom: Point3;

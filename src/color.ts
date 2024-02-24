@@ -11,11 +11,17 @@ export class Color3 {
     return new Color3(this.r * other.r, this.g * other.g, this.b * other.b);
   }
 
-  public add(other: Color3) {
+  public add(other: Color3): Color3 {
     return new Color3(this.r + other.r, this.g + other.g, this.b + other.b);
   }
 
-  public scale(t: number) {
+  public plusEquals(other: Color3) {
+    this.r += other.r;
+    this.g += other.g;
+    this.b += other.b;
+  }
+
+  public scale(t: number): Color3 {
     return new Color3(t * this.r, t * this.g, t * this.b);
   }
 

@@ -48,5 +48,19 @@
       />
       <button type="submit">Submit</button>
     </form>
+      <form id="numSamplesForm" action="/submit-form" method="post">
+      <label for="numSamplesInput">Number of samples per pixel:<span id="numSamplesSliderValue">1</span></label></label>
+      <input
+        type="range"
+        id="numSamplesInput"
+        name="numSamplesInput"
+        min="1"
+        max="10"
+        step="1"
+        value="1"
+        oninput="document.getElementById('numSamplesSliderValue').textContent = value"
+      />
+      <button type="submit">Submit</button>
+    </form>
   </body>
 </html>

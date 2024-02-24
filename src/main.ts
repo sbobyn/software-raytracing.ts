@@ -9,6 +9,7 @@ var canvasScaledHeight: number;
 
 var heightForm: HTMLFormElement;
 var bounceDepthForm: HTMLFormElement;
+var numSamplesForm: HTMLFormElement;
 
 var device: Device;
 
@@ -50,6 +51,9 @@ function init() {
   bounceDepthForm = <HTMLFormElement>document.getElementById("bounceDepthForm");
   bounceDepthForm.addEventListener("submit", changeBounceDepth);
 
+  numSamplesForm = <HTMLFormElement>document.getElementById("numSamplesForm");
+  numSamplesForm.addEventListener("submit", changeNumSamples);
+
   requestAnimationFrame(drawingLoop);
 }
 
@@ -70,6 +74,15 @@ function changeBounceDepth(event: Event) {
   console.log("Bounce depth submitted:", bounceDepthValue);
 
   device.changeMaxDepth(bounceDepthValue);
+}
+
+function changeNumSamples(event: Event) {
+  event.preventDefault();
+  var input = <HTMLFormElement>document.getElementById("numSamplesInput");
+  var numSamplesValue = parseInt(input.value);
+  console.log("Number of samples submitted", numSamplesValue);
+
+  device.changeNumSamples(numSamplesValue);
 }
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -128,9 +141,6 @@ function changeCameraPosition(deltaTime: number) {
     device.moveCamera(moveDir, deltaTime);
   }
 }
-
-// Click and Drag
-function changeCameraDirection() {}
 
 // ------------------------------------------------------------------
 
