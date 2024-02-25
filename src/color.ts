@@ -1,3 +1,5 @@
+import { randomInRange } from "./utils.js";
+
 export class Color3 {
   constructor(public r: number, public g: number, public b: number) {}
 
@@ -5,6 +7,14 @@ export class Color3 {
     this.r = other.r;
     this.g = other.g;
     this.b = other.b;
+  }
+
+  public static random(min: number = 0, max: number = 1): Color3 {
+    return new Color3(
+      randomInRange(min, max),
+      randomInRange(min, max),
+      randomInRange(min, max)
+    );
   }
 
   public mul(other: Color3): Color3 {

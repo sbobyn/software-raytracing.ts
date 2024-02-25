@@ -4,7 +4,8 @@ import { Vec3, Point3 } from "./vector.js";
 import { Camera } from "./camera.js";
 import { HittableList } from "./hittable.js";
 import { Sphere } from "./sphere.js";
-import { Dielectric, Diffuse, Metal } from "./material.js";
+import { Dielectric, Diffuse, Material, Metal } from "./material.js";
+import { randomInRange } from "./utils.js";
 
 export class Device {
   // the back buffer size is equal to the number of pixels
@@ -34,19 +35,52 @@ export class Device {
     this.viewportHeight = 2.0;
     this.viewportWidth = this.viewportHeight * (this.width / this.height);
     this.camera = new Camera();
+    this.camera.lookfrom = new Point3(5, 2, 3);
     this.camera.lookAt(new Point3(0, 0, -1));
 
     this.scene = new HittableList();
-    var groundMat = new Diffuse(new Color3(0.8, 0.8, 0.0), 0.9);
-    var centerMat = new Diffuse(new Color3(0.1, 0.2, 0.5));
-    var leftMat = new Dielectric(1.5);
-    var rightMat = new Metal(new Color3(0.8, 0.6, 0.2), 0.0);
 
-    this.scene.add(new Sphere(new Point3(0, -100.5, -1), 100, groundMat));
-    this.scene.add(new Sphere(new Point3(0, 0.0, -1), 0.5, centerMat));
-    this.scene.add(new Sphere(new Point3(1, 0, -1), 0.5, rightMat));
-    this.scene.add(new Sphere(new Point3(-1, 0, -1), 0.5, leftMat));
-    this.scene.add(new Sphere(new Point3(-1, 0, -1), -0.48, leftMat));
+    var numBalls = 11;
+    for (var a = -numBalls; a < numBalls; a++) {
+      for (var b = -numBalls; b < numBalls; b++) {
+        var chooseMat = Math.random();
+        var center = new Point3(
+          a + 0.9 * Math.random(),
+          0.2,
+          b + 0.9 * Math.random()
+        );
+
+        if (center.subtract(new Point3(4, 0.2, 0)).length() > 0.9) {
+          var sphereMat: Material;
+          if (chooseMat < 0.8) {
+            // diffuse
+            var albedo = Color3.random().mul(Color3.random());
+            sphereMat = new Diffuse(albedo);
+            this.scene.add(new Sphere(center, 0.2, sphereMat));
+          } else if (chooseMat < 0.95) {
+            // metal
+            var albedo = Color3.random(0.5, 1);
+            var roughness = randomInRange(0, 0.5);
+            sphereMat = new Metal(albedo, roughness);
+            this.scene.add(new Sphere(center, 0.2, sphereMat));
+          } else {
+            // glass
+            sphereMat = new Dielectric(1.5);
+            this.scene.add(new Sphere(center, 0.2, sphereMat));
+          }
+        }
+      }
+    }
+
+    var groundMat = new Diffuse(new Color3(0.5, 0.5, 0.5));
+    var centerMat = new Dielectric(1.5);
+    var leftMat = new Diffuse(new Color3(0.4, 0.2, 0.1));
+    var rightMat = new Metal(new Color3(0.7, 0.6, 0.5), 0.0);
+
+    this.scene.add(new Sphere(new Point3(0, -1000, -1), 1000, groundMat));
+    this.scene.add(new Sphere(new Point3(0, 1, 0), 1, centerMat));
+    this.scene.add(new Sphere(new Point3(4, 1, 0), 1, rightMat));
+    this.scene.add(new Sphere(new Point3(-4, 1, -0), 1, leftMat));
 
     this.maxDepth = 4;
     this.numSamples = 1;
