@@ -37,14 +37,15 @@ export class Device {
     this.camera.lookAt(new Point3(0, 0, -1));
 
     this.scene = new HittableList();
-    var groundMat = new Diffuse(new Color3(0.5, 0.5, 0.5));
-    var leftMat = new Metal(new Color3(0.6, 0.0, 0));
-    var rightMat = new Metal(new Color3(0.0, 0.0, 0.4));
-    var centerMat = new Metal(new Color3(0.8, 0.8, 0.8));
-    this.scene.add(new Sphere(new Point3(0, 0, -1), 0.5, centerMat));
-    this.scene.add(new Sphere(new Point3(2, 0, -1), 0.5, rightMat));
-    this.scene.add(new Sphere(new Point3(-2, 0, -1), 0.5, leftMat));
+    var groundMat = new Diffuse(new Color3(0.8, 0.8, 0.0));
+    var centerMat = new Diffuse(new Color3(0.7, 0.3, 0.3));
+    var leftMat = new Metal(new Color3(0.8, 0.8, 0.8), 0.3);
+    var rightMat = new Metal(new Color3(0.8, 0.6, 0.2), 0.0);
+
     this.scene.add(new Sphere(new Point3(0, -100.5, -1), 100, groundMat));
+    this.scene.add(new Sphere(new Point3(0, 0, -1), 0.5, centerMat));
+    this.scene.add(new Sphere(new Point3(1, 0, -1), 0.5, rightMat));
+    this.scene.add(new Sphere(new Point3(-1, 0, -1), 0.5, leftMat));
 
     this.maxDepth = 2;
     this.numSamples = 1;
@@ -160,7 +161,7 @@ export class Device {
         for (var sample = 0; sample < this.numSamples; sample++) {
           ray.dir = pixel_ij.subtract(this.camera.lookfrom);
           if (this.numSamples > 1) {
-            // prevents jitter when using one sample per pixel 
+            // prevents jitter when using one sample per pixel
             // since we don't want a random offset if only taking one sample
             ray.dir.plusEquals(this.pixelOffset(pixeldeltaU, pixeldeltaV));
           }

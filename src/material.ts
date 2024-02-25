@@ -12,8 +12,9 @@ export interface Material {
   ): boolean;
 }
 
+// roughness between 0 and 1
 export class Metal implements Material {
-  constructor(private albedo: Color3) {}
+  constructor(private albedo: Color3, private roughness: number = 0) {}
   scatter(
     inRay: Ray,
     rec: HitRecord,
@@ -22,9 +23,11 @@ export class Metal implements Material {
   ): boolean {
     var reflected = inRay.dir.normalized().reflect(rec.normal!);
     scattered.orig = rec.p!;
-    scattered.dir = reflected;
+    scattered.dir = reflected.add(
+      Vec3.randomUnitVector().scale(this.roughness)
+    );
     attenuation.copy(this.albedo);
-    return true;
+    return scattered.dir.dot(rec.normal!) > 0;
   }
 }
 
