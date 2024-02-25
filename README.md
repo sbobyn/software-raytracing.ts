@@ -10,6 +10,8 @@
     - textured random ball scene
     - cornell box
     - in one weekend pt 2 scene
+    - bouncing balls
+      - motion blur
   - scene editor
     - add/remove objects, lights
     - move objects

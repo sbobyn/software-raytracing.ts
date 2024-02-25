@@ -4,7 +4,7 @@ import { Vec3, Point3 } from "./vector.js";
 import { Camera } from "./camera.js";
 import { HittableList } from "./hittable.js";
 import { Sphere } from "./sphere.js";
-import { Diffuse, Metal } from "./material.js";
+import { Dielectric, Diffuse, Metal } from "./material.js";
 
 export class Device {
   // the back buffer size is equal to the number of pixels
@@ -37,17 +37,18 @@ export class Device {
     this.camera.lookAt(new Point3(0, 0, -1));
 
     this.scene = new HittableList();
-    var groundMat = new Diffuse(new Color3(0.8, 0.8, 0.0));
-    var centerMat = new Diffuse(new Color3(0.7, 0.3, 0.3));
-    var leftMat = new Metal(new Color3(0.8, 0.8, 0.8), 0.3);
+    var groundMat = new Diffuse(new Color3(0.8, 0.8, 0.0), 0.9);
+    var centerMat = new Diffuse(new Color3(0.1, 0.2, 0.5));
+    var leftMat = new Dielectric(1.5);
     var rightMat = new Metal(new Color3(0.8, 0.6, 0.2), 0.0);
 
     this.scene.add(new Sphere(new Point3(0, -100.5, -1), 100, groundMat));
-    this.scene.add(new Sphere(new Point3(0, 0, -1), 0.5, centerMat));
+    this.scene.add(new Sphere(new Point3(0, 0.0, -1), 0.5, centerMat));
     this.scene.add(new Sphere(new Point3(1, 0, -1), 0.5, rightMat));
     this.scene.add(new Sphere(new Point3(-1, 0, -1), 0.5, leftMat));
+    this.scene.add(new Sphere(new Point3(-1, 0, -1), -0.48, leftMat));
 
-    this.maxDepth = 2;
+    this.maxDepth = 4;
     this.numSamples = 1;
     this.prevFrameWeight = 0.0;
     this.newFrameWeight = 1.0;
@@ -113,6 +114,11 @@ export class Device {
     var prevG = this.backbuffer.data[index + 1];
     var prevB = this.backbuffer.data[index + 2];
 
+    // gamma correction
+    color.r = this.linearToGamma(color.r);
+    color.g = this.linearToGamma(color.g);
+    color.b = this.linearToGamma(color.b);
+
     var newR =
       this.prevFrameWeight * prevR + this.newFrameWeight * color.r * 255;
     var newG =
@@ -125,6 +131,10 @@ export class Device {
     this.backbuffer.data[index + 2] = newB;
 
     this.backbuffer.data[index + 3] = 1 * 255;
+  }
+
+  private linearToGamma(linearValue: number): number {
+    return Math.sqrt(linearValue);
   }
 
   public pixelOffset(pixeldu: Vec3, pixeldv: Vec3): Vec3 {

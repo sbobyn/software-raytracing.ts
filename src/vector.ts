@@ -67,6 +67,13 @@ export class Vec3 {
     return this.subtract(N.scale(2 * this.dot(N)));
   }
 
+  static refract(uv: Vec3, n: Vec3, eta1_over_eta2: number) {
+    var cosTheta = Math.min(uv.negated().dot(n), 1);
+    var rOutPerp = uv.add(n.scale(cosTheta)).scale(eta1_over_eta2);
+    var rOutParallel = n.scale(-Math.sqrt(1 - rOutPerp.lengthSquared()));
+    return rOutPerp.add(rOutParallel);
+  }
+
   public add(other: Vec3): Vec3 {
     return new Vec3(this.x + other.x, this.y + other.y, this.z + other.z);
   }

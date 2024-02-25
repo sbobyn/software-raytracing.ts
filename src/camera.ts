@@ -37,7 +37,7 @@ export class Camera {
     if (depth < 0) return Color3.BLACK;
 
     var rec = new HitRecord();
-    if (scene.hit(ray, 0.001, Infinity, rec)) {
+    if (scene.hit(ray, 1e-8, Infinity, rec)) {
       var scattered = new Ray(rec.p!, new Vec3(0, 0, 0)); // placeholder dir
       var attenuation = Color3.BLACK; // placeholder
       if (rec.material!.scatter(ray, rec, attenuation, scattered))
