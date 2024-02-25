@@ -12,6 +12,8 @@ var bounceDepthForm: HTMLFormElement;
 var numSamplesForm: HTMLFormElement;
 var frameWindowLengthForm: HTMLFormElement;
 
+var gammaCorrectionCheckbox: HTMLInputElement;
+
 var device: Device;
 
 // fps vars
@@ -44,6 +46,11 @@ function init() {
 
   device = new Device(canvas);
 
+  gammaCorrectionCheckbox = <HTMLInputElement>(
+    document.getElementById("gammaCheckbox")
+  );
+  gammaCorrectionCheckbox.addEventListener("change", toggleGammaCorrection);
+
   divAverageFPS = <HTMLDivElement>document.getElementById("averageFPS");
 
   heightForm = <HTMLFormElement>document.getElementById("heightForm");
@@ -71,6 +78,11 @@ function changeCanvasHeight(event: Event) {
   console.log("Height submitted:", heightValue);
 
   device.changeHeight(heightValue);
+}
+
+function toggleGammaCorrection() {
+  console.log("Gamma correction toggled");
+  device.toggleGammaCorrection();
 }
 
 function changeBounceDepth(event: Event) {

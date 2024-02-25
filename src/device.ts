@@ -24,6 +24,7 @@ export class Device {
   private numSamples: number;
   private prevFrameWeight: number; // for progressive rendering
   private newFrameWeight: number;
+  private gammaCorrectionEnabled: boolean;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -40,14 +41,14 @@ export class Device {
 
     this.scene = new HittableList();
 
-    var numBalls = 11;
+    var numBalls = 5;
     for (var a = -numBalls; a < numBalls; a++) {
       for (var b = -numBalls; b < numBalls; b++) {
         var chooseMat = Math.random();
         var center = new Point3(
-          a + 0.9 * Math.random(),
+          2 * a + 2 * Math.random(),
           0.2,
-          b + 0.9 * Math.random()
+          2 * b + 2 * Math.random()
         );
 
         if (center.subtract(new Point3(4, 0.2, 0)).length() > 0.9) {
@@ -86,6 +87,7 @@ export class Device {
     this.numSamples = 1;
     this.prevFrameWeight = 0.0;
     this.newFrameWeight = 1.0;
+    this.gammaCorrectionEnabled = true;
   }
 
   public changeMaxDepth(newDepth: number) {
@@ -109,6 +111,10 @@ export class Device {
   public changeProgressRenderingWindowSize(newWindowLength: number) {
     this.newFrameWeight = 1 / newWindowLength;
     this.prevFrameWeight = 1 - this.newFrameWeight;
+  }
+
+  public toggleGammaCorrection() {
+    this.gammaCorrectionEnabled = !this.gammaCorrectionEnabled;
   }
 
   public moveCamera(direction: Vec3, deltaTime: number) {
@@ -149,9 +155,11 @@ export class Device {
     var prevB = this.backbuffer.data[index + 2];
 
     // gamma correction
-    color.r = this.linearToGamma(color.r);
-    color.g = this.linearToGamma(color.g);
-    color.b = this.linearToGamma(color.b);
+    if (this.gammaCorrectionEnabled) {
+      color.r = this.linearToGamma(color.r);
+      color.g = this.linearToGamma(color.g);
+      color.b = this.linearToGamma(color.b);
+    }
 
     var newR =
       this.prevFrameWeight * prevR + this.newFrameWeight * color.r * 255;
@@ -167,6 +175,7 @@ export class Device {
     this.backbuffer.data[index + 3] = 1 * 255;
   }
 
+  // approximation of gamma correction using gamma=2
   private linearToGamma(linearValue: number): number {
     return Math.sqrt(linearValue);
   }

@@ -3,7 +3,6 @@
 ## UI
 
 - gamma correction toggle
-- anti aliasing toggle
 - scenes
   - scene loading
     - random ball scene
@@ -21,8 +20,6 @@
       - drag and move
       - open material editor
   - move lights
-- number of rays per pixel
-- number of reflected rays
 - camera settings
   - fov
   - focal length
@@ -31,16 +28,12 @@
 
 ### Part 1
 
-- anti-aliasing
-- multiple rays per pixel
-- basic lighting
-- ray scattering
-- different materials
-  - diffuse
-  - metal
-  - solid glass
-  - hollow glass
-- defocus blur
+- defocus blur / depth of field
+  - 2 implementation options
+    - slow but accurate: physically simulate by sampling ray origins
+    - fast but inaccurate: apply a post processing blur convolution
+      - cast ray to find distance to first intersection, blur things not on the camera plane
+      - use a shader
 
 ### Part 2
 
