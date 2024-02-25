@@ -37,7 +37,8 @@ export class Diffuse implements Material {
   constructor(
     private albedo: Color3,
     private roughness: number = 1,
-    private distribution: Distribution = Distribution.Lambertian
+    private distribution: Distribution = Distribution.Lambertian,
+    private absorbtionProbability: number = 0
   ) {}
 
   scatter(
@@ -54,10 +55,17 @@ export class Diffuse implements Material {
         reflected = rec.normal!.add(
           Vec3.randomUnitVector().scale(this.roughness)
         );
+        if (reflected.nearEquals(Vec3.ZERO)) reflected = rec.normal!;
     }
     scattered.orig = rec.p!;
     scattered.dir = reflected;
-    attenuation.copy(this.albedo);
+
+    var rayAbsorbed: boolean = Math.random() < this.absorbtionProbability;
+    attenuation.copy(
+      rayAbsorbed
+        ? Color3.BLACK
+        : this.albedo.scale(1 - this.absorbtionProbability)
+    );
     return true;
   }
 }

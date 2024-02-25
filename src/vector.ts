@@ -38,8 +38,8 @@ export class Vec3 {
     }
   }
 
-  public equals(other: Vec3): boolean {
-    let eps = 0.0001;
+  public nearEquals(other: Vec3): boolean {
+    let eps = 1e-7;
     return (
       Math.abs(this.x - other.x) < eps &&
       Math.abs(this.y - other.y) < eps &&

@@ -153,7 +153,7 @@ function changeCameraPosition(deltaTime: number) {
   if (keyStates["a"]) moveDir.minusEquals(device.camera.u);
   if (keyStates["d"]) moveDir.plusEquals(device.camera.u);
 
-  if (!moveDir.equals(Vec3.ZERO)) {
+  if (!moveDir.nearEquals(Vec3.ZERO)) {
     moveDir = moveDir.normalized();
     device.moveCamera(moveDir, deltaTime);
   }
