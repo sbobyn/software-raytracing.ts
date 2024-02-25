@@ -28,8 +28,17 @@ export class Metal implements Material {
   }
 }
 
+export enum Distribution {
+  Uniform,
+  Lambertian,
+}
+
 export class Diffuse implements Material {
-  constructor(private albedo: Color3) {}
+  constructor(
+    private albedo: Color3,
+    private roughness: number = 1,
+    private distribution: Distribution = Distribution.Lambertian
+  ) {}
 
   scatter(
     inRay: Ray,
@@ -37,8 +46,15 @@ export class Diffuse implements Material {
     attenuation: Color3,
     scattered: Ray
   ): boolean {
-    // var reflected = Vec3.randomOnHemisphere(rec.normal!); // Uniform distribution
-    var reflected = rec.normal!.add(Vec3.randomUnitVector()); // Lambertian distrubtion
+    var reflected: Vec3;
+    switch (this.distribution) {
+      case Distribution.Uniform:
+        reflected = Vec3.randomOnHemisphere(rec.normal!);
+      case Distribution.Lambertian:
+        reflected = rec.normal!.add(
+          Vec3.randomUnitVector().scale(this.roughness)
+        );
+    }
     scattered.orig = rec.p!;
     scattered.dir = reflected;
     attenuation.copy(this.albedo);

@@ -21,6 +21,8 @@ export class Device {
   private scene: HittableList;
   private maxDepth: number;
   private numSamples: number;
+  private prevFrameWeight: number; // for progressive rendering
+  private newFrameWeight: number;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -46,6 +48,8 @@ export class Device {
 
     this.maxDepth = 2;
     this.numSamples = 1;
+    this.prevFrameWeight = 0.0;
+    this.newFrameWeight = 1.0;
   }
 
   public changeMaxDepth(newDepth: number) {
@@ -59,10 +63,16 @@ export class Device {
     this.canvas.width = this.width;
     this.viewportHeight = 2.0;
     this.viewportWidth = this.viewportHeight * (this.width / this.height);
+    this.clear();
   }
 
   public changeNumSamples(newNum: number) {
     this.numSamples = newNum;
+  }
+
+  public changeProgressRenderingWindowSize(newWindowLength: number) {
+    this.newFrameWeight = 1 / newWindowLength;
+    this.prevFrameWeight = 1 - this.newFrameWeight;
   }
 
   public moveCamera(direction: Vec3, deltaTime: number) {
@@ -90,6 +100,29 @@ export class Device {
     this.backbuffer.data[index] = color.r * 255;
     this.backbuffer.data[index + 1] = color.g * 255;
     this.backbuffer.data[index + 2] = color.b * 255;
+    this.backbuffer.data[index + 3] = 1 * 255;
+  }
+
+  // progressive rendering
+  // accumulate rays over time
+  public writePixelProgressive(x: number, y: number, color: Color3): void {
+    var index: number = (Math.floor(x) + Math.floor(y) * this.width) * 4;
+
+    var prevR = this.backbuffer.data[index];
+    var prevG = this.backbuffer.data[index + 1];
+    var prevB = this.backbuffer.data[index + 2];
+
+    var newR =
+      this.prevFrameWeight * prevR + this.newFrameWeight * color.r * 255;
+    var newG =
+      this.prevFrameWeight * prevG + this.newFrameWeight * color.g * 255;
+    var newB =
+      this.prevFrameWeight * prevB + this.newFrameWeight * color.b * 255;
+
+    this.backbuffer.data[index] = newR;
+    this.backbuffer.data[index + 1] = newG;
+    this.backbuffer.data[index + 2] = newB;
+
     this.backbuffer.data[index + 3] = 1 * 255;
   }
 
@@ -126,9 +159,8 @@ export class Device {
         pixel_ij.plusEquals(pixeldeltaU);
         for (var sample = 0; sample < this.numSamples; sample++) {
           ray.dir = pixel_ij.subtract(this.camera.lookfrom);
-          // TODO : accumulate samples over time instead of clearing and resampling every frame
           if (this.numSamples > 1) {
-            // prevents jitter when using one sample per pixel
+            // prevents jitter when using one sample per pixel 
             // since we don't want a random offset if only taking one sample
             ray.dir.plusEquals(this.pixelOffset(pixeldeltaU, pixeldeltaV));
           }
@@ -136,7 +168,7 @@ export class Device {
             this.camera.rayColor(ray, this.scene, this.maxDepth)
           );
         }
-        this.writePixel(i, j, pixelColor.scale(1 / this.numSamples));
+        this.writePixelProgressive(i, j, pixelColor.scale(1 / this.numSamples));
       }
     }
   }

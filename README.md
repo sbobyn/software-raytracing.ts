@@ -67,10 +67,9 @@ Experiment with different types of lights
 - spotlight
 - cone
 
-## Accumulating samples over time
+## Progressive Rendering
 
-- improve performance by averaging samples over time instead of clearing the canvas every frame
-- 'progressive rendering'
+- accumulate samples across different threads on each frame computation
 
 ## Denoising
 

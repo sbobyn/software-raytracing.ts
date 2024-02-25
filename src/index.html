@@ -62,5 +62,19 @@
       />
       <button type="submit">Submit</button>
     </form>
+    <form id="frameWindowLengthForm" action="/submit-form" method="post">
+      <label for="frameWindowLengthInput">Progressive rendering window length:<span id="frameWindowLengthSliderValue">1</span></label></label>
+      <input
+        type="range"
+        id="frameWindowLengthInput"
+        name="frameWindowLengthInput"
+        min="1"
+        max="10"
+        step="1"
+        value="1"
+        oninput="document.getElementById('frameWindowLengthSliderValue').textContent = value"
+      />
+      <button type="submit">Submit</button>
+    </form>
   </body>
 </html>

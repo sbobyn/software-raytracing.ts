@@ -10,6 +10,7 @@ var canvasScaledHeight: number;
 var heightForm: HTMLFormElement;
 var bounceDepthForm: HTMLFormElement;
 var numSamplesForm: HTMLFormElement;
+var frameWindowLengthForm: HTMLFormElement;
 
 var device: Device;
 
@@ -54,6 +55,11 @@ function init() {
   numSamplesForm = <HTMLFormElement>document.getElementById("numSamplesForm");
   numSamplesForm.addEventListener("submit", changeNumSamples);
 
+  frameWindowLengthForm = <HTMLFormElement>(
+    document.getElementById("frameWindowLengthForm")
+  );
+  frameWindowLengthForm.addEventListener("submit", changeFrameWindowLength);
+
   requestAnimationFrame(drawingLoop);
 }
 
@@ -83,6 +89,17 @@ function changeNumSamples(event: Event) {
   console.log("Number of samples submitted", numSamplesValue);
 
   device.changeNumSamples(numSamplesValue);
+}
+
+function changeFrameWindowLength(event: Event) {
+  event.preventDefault();
+  var input = <HTMLFormElement>(
+    document.getElementById("frameWindowLengthInput")
+  );
+  var windowLengthValue = parseInt(input.value);
+  console.log("Window Length submitted", windowLengthValue);
+
+  device.changeProgressRenderingWindowSize(windowLengthValue);
 }
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -169,7 +186,7 @@ function drawingLoop(now: number) {
   computeFps(now);
   changeCameraPosition(deltaTime);
 
-  device.clear(); // clear the front buffer and flush into back buffer
+  // device.clear(); // clear the front buffer and flush into back buffer
   device.render(); // write to back buffer
   device.present(); // flush the back buffer into the front buffer
   requestAnimationFrame(drawingLoop);
