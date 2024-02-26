@@ -23,6 +23,7 @@
 - camera settings
   - fov
   - focal length
+- BVH - toggle visualization of BVH
 
 ## Ray tracing in one weekend
 

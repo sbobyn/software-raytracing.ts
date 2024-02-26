@@ -25,6 +25,7 @@ export class Device {
   private prevFrameWeight: number; // for progressive rendering
   private newFrameWeight: number;
   private gammaCorrectionEnabled: boolean;
+  private cameraMoving: boolean;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -41,7 +42,7 @@ export class Device {
 
     this.scene = new HittableList();
 
-    var numBalls = 5;
+    var numBalls = 1;
     for (var a = -numBalls; a < numBalls; a++) {
       for (var b = -numBalls; b < numBalls; b++) {
         var chooseMat = Math.random();
@@ -88,6 +89,7 @@ export class Device {
     this.prevFrameWeight = 0.0;
     this.newFrameWeight = 1.0;
     this.gammaCorrectionEnabled = true;
+    this.cameraMoving = false;
   }
 
   public changeMaxDepth(newDepth: number) {
@@ -121,6 +123,17 @@ export class Device {
     this.camera.lookfrom.plusEquals(
       direction.scale(this.camera.moveSpeed * deltaTime)
     );
+    this.cameraMoving = true;
+  }
+
+  public rotateCamera(deltaU: number, deltaV: number) {
+    let currLookAt = this.camera.lookfrom.add(this.camera.lookdir);
+    let newLookAt = currLookAt
+      .add(this.camera.u.scale(deltaU))
+      .add(this.camera.v.scale(-deltaV));
+
+    this.camera.lookAt(newLookAt);
+    this.cameraMoving = true;
   }
 
   public clear() {
@@ -138,6 +151,13 @@ export class Device {
   // write color to position (x,y) of the back buffer
   public writePixel(x: number, y: number, color: Color3): void {
     var index: number = (Math.floor(x) + Math.floor(y) * this.width) * 4;
+
+    // gamma correction
+    if (this.gammaCorrectionEnabled) {
+      color.r = this.linearToGamma(color.r);
+      color.g = this.linearToGamma(color.g);
+      color.b = this.linearToGamma(color.b);
+    }
 
     this.backbuffer.data[index] = color.r * 255;
     this.backbuffer.data[index + 1] = color.g * 255;
@@ -206,24 +226,29 @@ export class Device {
     var pixel_ij: Point3;
     var ray = new Ray(this.camera.lookfrom, new Vec3(0, 0, 0)); // initial dir is a placeholder
     var pixelColor: Color3;
+    var numRays = this.numSamples;
     for (var j = 0; j < this.height; j++) {
       pixel_ij = pixel_00.add(pixeldeltaV.scale(j));
       for (var i = 0; i < this.width; i++) {
         pixelColor = new Color3(0, 0, 0);
         pixel_ij.plusEquals(pixeldeltaU);
-        for (var sample = 0; sample < this.numSamples; sample++) {
+
+        ray.dir = pixel_ij.subtract(this.camera.lookfrom);
+        pixelColor.plusEquals(
+          this.camera.rayColor(ray, this.scene, this.maxDepth)
+        );
+        for (var sample = 1; sample < numRays; sample++) {
           ray.dir = pixel_ij.subtract(this.camera.lookfrom);
-          if (this.numSamples > 1) {
-            // prevents jitter when using one sample per pixel
-            // since we don't want a random offset if only taking one sample
-            ray.dir.plusEquals(this.pixelOffset(pixeldeltaU, pixeldeltaV));
-          }
+          ray.dir.plusEquals(this.pixelOffset(pixeldeltaU, pixeldeltaV));
           pixelColor.plusEquals(
             this.camera.rayColor(ray, this.scene, this.maxDepth)
           );
         }
-        this.writePixelProgressive(i, j, pixelColor.scale(1 / this.numSamples));
+        if (this.cameraMoving)
+          this.writePixel(i, j, pixelColor.scale(1 / numRays));
+        else this.writePixelProgressive(i, j, pixelColor.scale(1 / numRays));
       }
     }
+    this.cameraMoving = false;
   }
 }

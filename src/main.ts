@@ -143,12 +143,7 @@ function handleMouseMove(event: MouseEvent) {
   let deltaX = (event.clientX - lastMouseX) * lookSensitivity;
   let deltaY = (event.clientY - lastMouseY) * lookSensitivity;
 
-  let currLookAt = device.camera.lookfrom.add(device.camera.lookdir);
-  let newLookAt = currLookAt
-    .add(device.camera.u.scale(deltaX))
-    .add(device.camera.v.scale(-deltaY));
-
-  device.camera.lookAt(newLookAt);
+  device.rotateCamera(deltaX, deltaY);
 
   lastMouseX = event.clientX;
   lastMouseY = event.clientY;

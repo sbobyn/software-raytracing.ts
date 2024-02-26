@@ -30,7 +30,7 @@ export class Camera {
     this.vfov = degreesToRadians(vfov);
     this.aspectRatio = aspectRatio;
 
-    this.moveSpeed = 2;
+    this.moveSpeed = 5;
   }
 
   public rayColor(ray: Ray, scene: Hittable, depth: number): Color3 {
