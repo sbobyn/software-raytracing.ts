@@ -11,12 +11,16 @@ export class Camera {
   public u: Vec3;
   public v: Vec3;
   public w: Vec3;
-  public focalLength: number;
-  public vfov: number; // vertical field of view
-  public aspectRatio: number;
+
+  public viewportWidth: number;
+  public viewportHeight: number;
   public moveSpeed: number;
 
-  constructor(vfov: number = 90, aspectRatio: number = 16 / 9) {
+  private vfov: number;
+  private aspectRatio: number;
+  public focalLength: number; // TODO make this private
+
+  constructor(vfov: number = 90, aspectRatio: number, focalLength: number) {
     this.lookfrom = new Point3(0, 0, 0);
     this.lookdir = new Point3(0, 0, -1); // looking down -z axis
     this.vup = new Vec3(0, 1, 0);
@@ -26,11 +30,32 @@ export class Camera {
     this.v = new Vec3(0, 1, 0);
     this.w = new Vec3(0, 0, 1);
 
-    this.focalLength = 1.0;
-    this.vfov = degreesToRadians(vfov);
-    this.aspectRatio = aspectRatio;
-
     this.moveSpeed = 5;
+
+    this.vfov = vfov;
+    this.aspectRatio = aspectRatio;
+    this.focalLength = focalLength;
+    var theta = degreesToRadians(this.vfov);
+    var h = Math.tan(theta / 2);
+    this.viewportHeight = 2 * h * this.focalLength;
+    this.viewportWidth = this.viewportHeight * this.aspectRatio;
+  }
+
+  public updateFOV(newValue: number) {
+    this.vfov = newValue;
+    this.setViewPort();
+  }
+
+  public updateAspectRatio(newValue: number) {
+    this.aspectRatio = newValue;
+    this.setViewPort();
+  }
+
+  public setViewPort() {
+    var theta = degreesToRadians(this.vfov);
+    var h = Math.tan(theta / 2);
+    this.viewportHeight = 2 * h * this.focalLength;
+    this.viewportWidth = this.viewportHeight * this.aspectRatio;
   }
 
   public rayColor(ray: Ray, scene: Hittable, depth: number): Color3 {

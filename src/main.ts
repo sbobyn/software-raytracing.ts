@@ -12,6 +12,7 @@ var bounceDepthForm: HTMLFormElement;
 var numSamplesForm: HTMLFormElement;
 var frameWindowLengthForm: HTMLFormElement;
 var numBallsForm: HTMLFormElement;
+var vfovForm: HTMLFormElement;
 
 var gammaCorrectionCheckbox: HTMLInputElement;
 
@@ -71,10 +72,23 @@ function init() {
   numBallsForm = <HTMLFormElement>document.getElementById("numBallsForm");
   numBallsForm.addEventListener("submit", changeNumBalls);
 
+  vfovForm = <HTMLFormElement>document.getElementById("vfovForm");
+  vfovForm.addEventListener("submit", changevFOV);
+
   requestAnimationFrame(drawingLoop);
 }
 
 // USER INPUT ------------------------------------------------------
+
+function changevFOV(event: Event) {
+  event.preventDefault();
+  var input = <HTMLInputElement>document.getElementById("vfovInput");
+  var vfov: number = parseInt(input.value);
+  console.log("vfov submitted:", vfov);
+
+  device.changeFOV(vfov);
+}
+
 function changeNumBalls(event: Event) {
   event.preventDefault();
   var input = <HTMLInputElement>document.getElementById("numBallsInput");

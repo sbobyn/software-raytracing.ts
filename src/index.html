@@ -95,5 +95,21 @@
       />
       <button type="submit">Submit</button>
     </form>
+     <form id="vfovForm" action="/submit-form" method="post">
+      <label for="vfovInput">Field of View:<span id="vfovSliderValue">90</span></label></label>
+      <input
+        type="range"
+        id="vfovInput"
+        name="vfovInput"
+        min="20"
+        max="150"
+        step="10"
+        value="90"
+        oninput="document.getElementById('vfovSliderValue').textContent = value"
+      />
+      <button type="submit">Submit</button>
+    </form>    
+      <button type="submit">Submit</button>
+    </form>
   </body>
 </html>

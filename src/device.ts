@@ -16,8 +16,6 @@ export class Device {
   private width: number;
   private height: number;
   private aspectRatio: number;
-  private viewportHeight: number;
-  private viewportWidth: number;
   public camera: Camera; // TODO make private
   private scene: HittableList;
   private maxDepth: number;
@@ -34,9 +32,8 @@ export class Device {
     this.context = canvas.getContext("2d", { willReadFrequently: true })!;
     this.backbuffer = this.context.getImageData(0, 0, this.width, this.height);
     this.aspectRatio = this.width / this.height;
-    this.viewportHeight = 2.0;
-    this.viewportWidth = this.viewportHeight * (this.width / this.height);
-    this.camera = new Camera();
+
+    this.camera = new Camera(90, this.width / this.height, 1);
     this.camera.lookfrom = new Point3(5, 2, 3);
     this.camera.lookAt(new Point3(0, 0, -1));
 
@@ -109,9 +106,12 @@ export class Device {
     this.canvas.height = newHeight;
     this.width = Math.floor(newHeight * this.aspectRatio);
     this.canvas.width = this.width;
-    this.viewportHeight = 2.0;
-    this.viewportWidth = this.viewportHeight * (this.width / this.height);
+    this.camera.updateAspectRatio(this.width / this.height);
     this.clear();
+  }
+
+  public changeFOV(newValue: number) {
+    this.camera.updateFOV(newValue);
   }
 
   public changeNumSamples(newNum: number) {
@@ -215,9 +215,8 @@ export class Device {
   }
 
   public render() {
-    // origin at top left
-    var viewportU = this.camera.u.scale(this.viewportWidth);
-    var viewportV = this.camera.v.scale(-this.viewportHeight);
+    var viewportU = this.camera.u.scale(this.camera.viewportWidth);
+    var viewportV = this.camera.v.scale(-this.camera.viewportHeight);
 
     // distance to next pixel
     var pixeldeltaU: Vec3 = viewportU.scale(1 / this.width);
