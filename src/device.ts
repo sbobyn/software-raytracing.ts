@@ -24,6 +24,8 @@ export class Device {
   private newFrameWeight: number;
   private gammaCorrectionEnabled: boolean;
   private cameraMoving: boolean;
+  private maxProgressiveSamples: number;
+  private numProgressiveSamples: number;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -45,6 +47,8 @@ export class Device {
     this.newFrameWeight = 1.0;
     this.gammaCorrectionEnabled = true;
     this.cameraMoving = false;
+    this.maxProgressiveSamples = 1;
+    this.numProgressiveSamples = 0;
   }
 
   private in1WkndScene(numBalls: number): HittableList {
@@ -119,8 +123,7 @@ export class Device {
   }
 
   public changeProgressRenderingWindowSize(newWindowLength: number) {
-    this.newFrameWeight = 1 / newWindowLength;
-    this.prevFrameWeight = 1 - this.newFrameWeight;
+    this.maxProgressiveSamples = newWindowLength;
   }
 
   public toggleGammaCorrection() {
@@ -215,6 +218,17 @@ export class Device {
   }
 
   public render() {
+    if (!this.cameraMoving) {
+      this.numProgressiveSamples = Math.min(
+        this.numProgressiveSamples + 1,
+        this.maxProgressiveSamples
+      );
+      this.newFrameWeight = 1 / this.numProgressiveSamples;
+      this.prevFrameWeight = 1 - this.newFrameWeight;
+    } else {
+      this.numProgressiveSamples = 0;
+    }
+
     var viewportU = this.camera.u.scale(this.camera.viewportWidth);
     var viewportV = this.camera.v.scale(-this.camera.viewportHeight);
 
