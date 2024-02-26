@@ -2,7 +2,7 @@ import { Color3 } from "./color.js";
 import { Ray } from "./ray.js";
 import { Vec3, Point3 } from "./vector.js";
 import { Camera } from "./camera.js";
-import { HittableList } from "./hittable.js";
+import { Hittable, HittableList } from "./hittable.js";
 import { Sphere } from "./sphere.js";
 import { Dielectric, Diffuse, Material, Metal } from "./material.js";
 import { randomInRange } from "./utils.js";
@@ -40,9 +40,18 @@ export class Device {
     this.camera.lookfrom = new Point3(5, 2, 3);
     this.camera.lookAt(new Point3(0, 0, -1));
 
-    this.scene = new HittableList();
+    this.scene = this.in1WkndScene(2);
 
-    var numBalls = 1;
+    this.maxDepth = 4;
+    this.numSamples = 1;
+    this.prevFrameWeight = 0.0;
+    this.newFrameWeight = 1.0;
+    this.gammaCorrectionEnabled = true;
+    this.cameraMoving = false;
+  }
+
+  private in1WkndScene(numBalls: number): HittableList {
+    var scene = new HittableList();
     for (var a = -numBalls; a < numBalls; a++) {
       for (var b = -numBalls; b < numBalls; b++) {
         var chooseMat = Math.random();
@@ -58,17 +67,17 @@ export class Device {
             // diffuse
             var albedo = Color3.random().mul(Color3.random());
             sphereMat = new Diffuse(albedo);
-            this.scene.add(new Sphere(center, 0.2, sphereMat));
+            scene.add(new Sphere(center, 0.2, sphereMat));
           } else if (chooseMat < 0.95) {
             // metal
             var albedo = Color3.random(0.5, 1);
             var roughness = randomInRange(0, 0.5);
             sphereMat = new Metal(albedo, roughness);
-            this.scene.add(new Sphere(center, 0.2, sphereMat));
+            scene.add(new Sphere(center, 0.2, sphereMat));
           } else {
             // glass
             sphereMat = new Dielectric(1.5);
-            this.scene.add(new Sphere(center, 0.2, sphereMat));
+            scene.add(new Sphere(center, 0.2, sphereMat));
           }
         }
       }
@@ -79,17 +88,16 @@ export class Device {
     var leftMat = new Diffuse(new Color3(0.4, 0.2, 0.1));
     var rightMat = new Metal(new Color3(0.7, 0.6, 0.5), 0.0);
 
-    this.scene.add(new Sphere(new Point3(0, -1000, -1), 1000, groundMat));
-    this.scene.add(new Sphere(new Point3(0, 1, 0), 1, centerMat));
-    this.scene.add(new Sphere(new Point3(4, 1, 0), 1, rightMat));
-    this.scene.add(new Sphere(new Point3(-4, 1, -0), 1, leftMat));
+    scene.add(new Sphere(new Point3(0, -1000, -1), 1000, groundMat));
+    scene.add(new Sphere(new Point3(0, 1, 0), 1, centerMat));
+    scene.add(new Sphere(new Point3(4, 1, 0), 1, rightMat));
+    scene.add(new Sphere(new Point3(-4, 1, -0), 1, leftMat));
 
-    this.maxDepth = 4;
-    this.numSamples = 1;
-    this.prevFrameWeight = 0.0;
-    this.newFrameWeight = 1.0;
-    this.gammaCorrectionEnabled = true;
-    this.cameraMoving = false;
+    return scene;
+  }
+
+  public changeNumBalls(newValue: number) {
+    this.scene = this.in1WkndScene(newValue);
   }
 
   public changeMaxDepth(newDepth: number) {

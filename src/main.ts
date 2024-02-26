@@ -11,6 +11,7 @@ var heightForm: HTMLFormElement;
 var bounceDepthForm: HTMLFormElement;
 var numSamplesForm: HTMLFormElement;
 var frameWindowLengthForm: HTMLFormElement;
+var numBallsForm: HTMLFormElement;
 
 var gammaCorrectionCheckbox: HTMLInputElement;
 
@@ -67,10 +68,22 @@ function init() {
   );
   frameWindowLengthForm.addEventListener("submit", changeFrameWindowLength);
 
+  numBallsForm = <HTMLFormElement>document.getElementById("numBallsForm");
+  numBallsForm.addEventListener("submit", changeNumBalls);
+
   requestAnimationFrame(drawingLoop);
 }
 
 // USER INPUT ------------------------------------------------------
+function changeNumBalls(event: Event) {
+  event.preventDefault();
+  var input = <HTMLInputElement>document.getElementById("numBallsInput");
+  var numBalls: number = parseInt(input.value);
+  console.log("numBalls submitted:", numBalls);
+
+  device.changeNumBalls(numBalls);
+}
+
 function changeCanvasHeight(event: Event) {
   event.preventDefault();
   var input = <HTMLInputElement>document.getElementById("heightInput");

@@ -81,5 +81,19 @@
       />
       <button type="submit">Submit</button>
     </form>
+    <form id="numBallsForm" action="/submit-form" method="post">
+      <label for="numBallsInput">Number of balls:<span id="numBallsSliderValue">3</span></label></label>
+      <input
+        type="range"
+        id="numBallsInput"
+        name="numBallsInput"
+        min="0"
+        max="10"
+        step="1"
+        value="3"
+        oninput="document.getElementById('numBallsSliderValue').textContent = value"
+      />
+      <button type="submit">Submit</button>
+    </form>
   </body>
 </html>
