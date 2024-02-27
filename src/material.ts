@@ -1,6 +1,7 @@
 import { Color3 } from "./color.js";
 import { HitRecord } from "./hittable.js";
 import { Ray } from "./ray.js";
+import { Texture } from "./texture.js";
 import { Vec3 } from "./vector.js";
 
 export interface Material {
@@ -14,7 +15,7 @@ export interface Material {
 
 // roughness between 0 and 1
 export class Metal implements Material {
-  constructor(private albedo: Color3, private roughness: number = 0) {}
+  constructor(private texture: Texture, private roughness: number = 0) {}
   scatter(
     inRay: Ray,
     rec: HitRecord,
@@ -26,7 +27,7 @@ export class Metal implements Material {
     scattered.dir = reflected.add(
       Vec3.randomUnitVector().scale(this.roughness)
     );
-    attenuation.copy(this.albedo);
+    attenuation.copy(this.texture.value(rec.u!, rec.v!, rec.p!));
     return scattered.dir.dot(rec.normal!) > 0;
   }
 }
@@ -38,7 +39,7 @@ export enum Distribution {
 
 export class Diffuse implements Material {
   constructor(
-    private albedo: Color3,
+    private texture: Texture,
     private roughness: number = 1,
     private distribution: Distribution = Distribution.Lambertian,
     private absorbtionProbability: number = 0
@@ -67,7 +68,9 @@ export class Diffuse implements Material {
     attenuation.copy(
       rayAbsorbed
         ? Color3.BLACK
-        : this.albedo.scale(1 - this.absorbtionProbability)
+        : this.texture
+            .value(rec.u!, rec.v!, rec.p!)
+            .scale(1 - this.absorbtionProbability)
     );
     return true;
   }

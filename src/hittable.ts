@@ -8,7 +8,9 @@ export class HitRecord {
     public normal?: Vec3, // always points againt hit ray
     public t?: number,
     public frontface?: boolean,
-    public material?: Material
+    public material?: Material,
+    public u?: number,
+    public v?: number
   ) {}
 
   public setFaceNormal(ray: Ray, outwardNormal: Vec3) {
@@ -24,6 +26,8 @@ export class HitRecord {
     this.t = other.t;
     this.frontface = other.frontface;
     this.material = other.material;
+    this.u = other.u;
+    this.v = other.v;
   }
 }
 

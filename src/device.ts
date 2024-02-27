@@ -6,6 +6,7 @@ import { Hittable, HittableList } from "./hittable.js";
 import { Sphere } from "./sphere.js";
 import { Dielectric, Diffuse, Material, Metal } from "./material.js";
 import { randomInRange } from "./utils.js";
+import ImageTexture, { CheckerTextureXYZ, SolidColor } from "./texture.js";
 
 export class Device {
   // the back buffer size is equal to the number of pixels
@@ -67,13 +68,13 @@ export class Device {
           if (chooseMat < 0.8) {
             // diffuse
             var albedo = Color3.random().mul(Color3.random());
-            sphereMat = new Diffuse(albedo);
+            sphereMat = new Diffuse(new SolidColor(albedo));
             scene.add(new Sphere(center, 0.2, sphereMat));
           } else if (chooseMat < 0.95) {
             // metal
             var albedo = Color3.random(0.5, 1);
             var roughness = randomInRange(0, 0.5);
-            sphereMat = new Metal(albedo, roughness);
+            sphereMat = new Metal(new SolidColor(albedo), roughness);
             scene.add(new Sphere(center, 0.2, sphereMat));
           } else {
             // glass
@@ -84,10 +85,17 @@ export class Device {
       }
     }
 
-    var groundMat = new Diffuse(new Color3(0.5, 0.5, 0.5));
+    var groundMat = new Diffuse(
+      new CheckerTextureXYZ(
+        new Color3(0.2, 0.3, 0.1),
+        new Color3(0.9, 0.9, 0.9),
+        0.32
+      )
+    );
     var centerMat = new Dielectric(1.5);
-    var leftMat = new Diffuse(new Color3(0.4, 0.2, 0.1));
-    var rightMat = new Metal(new Color3(0.7, 0.6, 0.5), 0.0);
+    // var leftMat = new Diffuse(new SolidColor(new Color3(0.4, 0.2, 0.1)));
+    var leftMat = new Diffuse(new ImageTexture("./earthmap.jpg"));
+    var rightMat = new Metal(new SolidColor(new Color3(0.7, 0.6, 0.5)), 0.0);
 
     scene.add(new Sphere(new Point3(0, -1000, -1), 1000, groundMat));
     scene.add(new Sphere(new Point3(0, 1, 0), 1, centerMat));

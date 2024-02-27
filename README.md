@@ -2,7 +2,6 @@
 
 ## UI
 
-- gamma correction toggle
 - scenes
   - scene loading
     - random ball scene
@@ -21,8 +20,7 @@
       - open material editor
   - move lights
 - camera settings
-  - fov
-  - focal length
+  - defocus blur toggle / distance
 - BVH - toggle visualization of BVH
 
 ## Ray tracing in one weekend
@@ -63,6 +61,12 @@ Experiment with different types of lights
 - spotlight
 - cone
 
+## Post Processing Effects
+
+Certain properties are expensive to brute force simulate (defocus blur, motion blur,)
+
+- can get similar visual results using simple post processing effects
+
 ## Progressive Rendering
 
 - accumulate samples across different threads on each frame computation
@@ -81,6 +85,8 @@ Experiment with different types of lights
   - CPU multithreading: get N images from N threads and average
   - GPU multithreading: compute each pixel's color in parallel or each ray in parallel
 - replace vector math with fast impl
+- value tables
+  - pre compute values to avoid recomputing all the time
 
 ## Other experiments
 
