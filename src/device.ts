@@ -48,7 +48,7 @@ export class Device {
     this.newFrameWeight = 1.0;
     this.gammaCorrectionEnabled = true;
     this.cameraMoving = false;
-    this.maxProgressiveSamples = 1;
+    this.maxProgressiveSamples = 30;
     this.numProgressiveSamples = 0;
   }
 
