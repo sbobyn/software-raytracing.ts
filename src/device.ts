@@ -7,6 +7,7 @@ import { Sphere } from "./sphere.js";
 import { Dielectric, Diffuse, Material, Metal } from "./material.js";
 import { randomInRange } from "./utils.js";
 import ImageTexture, { CheckerTextureXYZ, SolidColor } from "./texture.js";
+import { Quad } from "./quad.js";
 
 export class Device {
   // the back buffer size is equal to the number of pixels
@@ -40,7 +41,8 @@ export class Device {
     this.camera.lookfrom = new Point3(5, 2, 3);
     this.camera.lookAt(new Point3(0, 0, -1));
 
-    this.scene = this.in1WkndScene(2);
+    // this.scene = this.in1WkndScene(2);
+    this.scene = this.cornellBoxScene();
 
     this.maxDepth = 4;
     this.numSamples = 1;
@@ -50,6 +52,63 @@ export class Device {
     this.cameraMoving = false;
     this.maxProgressiveSamples = 30;
     this.numProgressiveSamples = 0;
+  }
+
+  private cornellBoxScene(): HittableList {
+    this.camera.lookfrom = new Point3(0, 0, 9);
+    this.camera.lookAt(new Point3(0, 0, 0));
+
+    var scene = new HittableList();
+    // Materials
+    const left_red = new Diffuse(new SolidColor(new Color3(1.0, 0.2, 0.2)));
+    const back_green = new Diffuse(new SolidColor(new Color3(0.2, 1.0, 0.2)));
+    const right_blue = new Diffuse(new SolidColor(new Color3(0.2, 0.2, 1.0)));
+    const upper_orange = new Diffuse(new SolidColor(new Color3(1.0, 0.5, 0.0)));
+    const lower_teal = new Diffuse(new SolidColor(new Color3(0.2, 0.8, 0.8)));
+
+    // Quads
+    scene.add(
+      new Quad(
+        new Point3(-3, -2, 5),
+        new Vec3(0, 0, -4),
+        new Vec3(0, 4, 0),
+        left_red
+      )
+    );
+    scene.add(
+      new Quad(
+        new Point3(-2, -2, 0),
+        new Vec3(4, 0, 0),
+        new Vec3(0, 4, 0),
+        back_green
+      )
+    );
+    scene.add(
+      new Quad(
+        new Point3(3, -2, 1),
+        new Vec3(0, 0, 4),
+        new Vec3(0, 4, 0),
+        right_blue
+      )
+    );
+    scene.add(
+      new Quad(
+        new Point3(-2, 3, 1),
+        new Vec3(4, 0, 0),
+        new Vec3(0, 0, 4),
+        upper_orange
+      )
+    );
+    scene.add(
+      new Quad(
+        new Point3(-2, -3, 5),
+        new Vec3(4, 0, 0),
+        new Vec3(0, 0, -4),
+        lower_teal
+      )
+    );
+
+    return scene;
   }
 
   private in1WkndScene(numBalls: number): HittableList {

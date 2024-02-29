@@ -32,8 +32,8 @@ export class Sphere implements Hittable {
     rec.p = ray.at(root);
     var outwardNormal = rec.p.subtract(this.position).scale(1 / this.radius);
     rec.setFaceNormal(ray, outwardNormal);
-    this.setUV(rec);
     rec.material = this.material;
+    this.setUV(rec);
 
     return true;
   }
