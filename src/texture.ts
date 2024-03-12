@@ -19,11 +19,11 @@ export class CheckerTextureXYZ implements Texture {
   }
 
   value(u: number, v: number, point: Point3): Color3 {
-    var xi = Math.floor(this.invScale * point.x);
-    var yi = Math.floor(this.invScale * point.y);
-    var zi = Math.floor(this.invScale * point.z);
+    let xi = Math.floor(this.invScale * point.x);
+    let yi = Math.floor(this.invScale * point.y);
+    let zi = Math.floor(this.invScale * point.z);
 
-    var isEven = (xi + yi + zi) % 2 == 0;
+    let isEven = (xi + yi + zi) % 2 == 0;
     return isEven ? this.c1 : this.c2;
   }
 }
@@ -44,14 +44,14 @@ export default class ImageTexture implements Texture {
   }
 
   public load(filename: string): void {
-    var image = new Image();
+    let image = new Image();
     image.onload = () => {
       this.width = image.width;
       this.height = image.height;
-      var tempCanvas: HTMLCanvasElement = document.createElement("canvas");
+      let tempCanvas: HTMLCanvasElement = document.createElement("canvas");
       tempCanvas.width = this.width;
       tempCanvas.height = this.height;
-      var tempContext: CanvasRenderingContext2D = tempCanvas.getContext("2d")!;
+      let tempContext: CanvasRenderingContext2D = tempCanvas.getContext("2d")!;
       tempContext.drawImage(image, 0, 0, this.width, this.height);
       this.buffer = tempContext.getImageData(
         0,
@@ -65,14 +65,14 @@ export default class ImageTexture implements Texture {
 
   public value(u: number, v: number, point: Point3): Color3 {
     if (this.buffer) {
-      var u = Math.abs((u * this.width) % this.width) >> 0;
-      var v = Math.abs(((1 - v) * this.height) % this.height) >> 0;
+      u = Math.abs((u * this.width) % this.width) >> 0;
+      v = Math.abs(((1 - v) * this.height) % this.height) >> 0;
 
-      var idx = (u + v * this.width) * 4;
+      let idx = (u + v * this.width) * 4;
 
-      var r = this.buffer[idx];
-      var g = this.buffer[idx + 1];
-      var b = this.buffer[idx + 2];
+      let r = this.buffer[idx];
+      let g = this.buffer[idx + 1];
+      let b = this.buffer[idx + 2];
 
       return new Color3(r / 255.0, g / 255.0, b / 255.0);
     } else {

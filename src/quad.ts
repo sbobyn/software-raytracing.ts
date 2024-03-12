@@ -14,7 +14,7 @@ export class Quad implements Hittable {
     private v: Vec3,
     private material: Material
   ) {
-    var n = u.cross(v);
+    let n = u.cross(v);
     this.normal = n.normalized();
     this.D = this.normal.dot(Q);
     this.w = n.scale(1 / n.dot(n));
@@ -29,19 +29,19 @@ export class Quad implements Hittable {
     // only hit frontface
     // if (this.normal.dot(ray.dir) > 0) return false;
 
-    var denom = this.normal.dot(ray.dir);
+    let denom = this.normal.dot(ray.dir);
 
     // check if ray parallel to plane
     if (Math.abs(denom) < 1e-8) return false;
 
     // check if intersection is in hit t inverval
-    var root = (this.D - this.normal.dot(ray.orig)) / denom;
+    let root = (this.D - this.normal.dot(ray.orig)) / denom;
     if (root <= tmin || root >= tmax) return false;
 
-    var intersectionPoint = ray.at(root);
-    var intersectionVector = intersectionPoint.subtract(this.Q);
-    var alpha = this.w.dot(intersectionVector.cross(this.v));
-    var beta = this.w.dot(this.u.cross(intersectionVector));
+    let intersectionPoint = ray.at(root);
+    let intersectionVector = intersectionPoint.subtract(this.Q);
+    let alpha = this.w.dot(intersectionVector.cross(this.v));
+    let beta = this.w.dot(this.u.cross(intersectionVector));
 
     // check if ray hits the 2d shape
     if (!this.isInterior(alpha, beta, rec)) return false;

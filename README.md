@@ -13,7 +13,7 @@
 ## Benchmarking
 
 - write some benchmark rendering tests on each scene
-  - vary # rays, BVH on /off, number of balls, etc.
+  - lety # rays, BVH on /off, number of balls, etc.
 
 ## UI
 

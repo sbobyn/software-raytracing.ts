@@ -35,8 +35,8 @@ export class Camera {
     this.vfov = vfov;
     this.aspectRatio = aspectRatio;
     this.focalLength = focalLength;
-    var theta = degreesToRadians(this.vfov);
-    var h = Math.tan(theta / 2);
+    let theta = degreesToRadians(this.vfov);
+    let h = Math.tan(theta / 2);
     this.viewportHeight = 2 * h * this.focalLength;
     this.viewportWidth = this.viewportHeight * this.aspectRatio;
   }
@@ -52,8 +52,8 @@ export class Camera {
   }
 
   public setViewPort() {
-    var theta = degreesToRadians(this.vfov);
-    var h = Math.tan(theta / 2);
+    let theta = degreesToRadians(this.vfov);
+    let h = Math.tan(theta / 2);
     this.viewportHeight = 2 * h * this.focalLength;
     this.viewportWidth = this.viewportHeight * this.aspectRatio;
   }
@@ -61,17 +61,17 @@ export class Camera {
   public rayColor(ray: Ray, scene: Hittable, depth: number): Color3 {
     if (depth < 0) return Color3.BLACK;
 
-    var rec = new HitRecord();
+    let rec = new HitRecord();
     if (scene.hit(ray, 1e-8, Infinity, rec)) {
-      var scattered = new Ray(rec.p!, new Vec3(0, 0, 0)); // placeholder dir
-      var attenuation = Color3.BLACK; // placeholder
+      let scattered = new Ray(rec.p!, new Vec3(0, 0, 0)); // placeholder dir
+      let attenuation = Color3.BLACK; // placeholder
       if (rec.material!.scatter(ray, rec, attenuation, scattered))
         return attenuation.mul(this.rayColor(scattered, scene, depth - 1));
       return Color3.BLACK;
     }
 
-    var unitDir = ray.dir.normalized();
-    var a: number = 0.5 * (unitDir.y + 1);
+    let unitDir = ray.dir.normalized();
+    let a: number = 0.5 * (unitDir.y + 1);
     return Color3.WHITE.scale(1 - a).add(Color3.SKY_BLUE.scale(a));
   }
 

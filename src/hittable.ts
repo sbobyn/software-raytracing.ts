@@ -39,9 +39,9 @@ export class HittableList implements Hittable {
   constructor(public objects: Hittable[] = []) {}
 
   public hit(ray: Ray, tmin: number, tmax: number, rec: HitRecord): boolean {
-    var temprec = new HitRecord();
-    var hitSomething = false;
-    var closestSoFar = tmax;
+    let temprec = new HitRecord();
+    let hitSomething = false;
+    let closestSoFar = tmax;
 
     for (const obj of this.objects) {
       if (obj.hit(ray, tmin, closestSoFar, temprec)) {

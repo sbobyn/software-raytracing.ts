@@ -6,7 +6,7 @@ export class Vec3 {
   public static readonly ZERO = new Vec3(0, 0, 0);
 
   public static randomInUnitSphere(): Vec3 {
-    var p = new Vec3(
+    let p = new Vec3(
       randomInRange(-1, 1),
       randomInRange(-1, 1),
       randomInRange(-1, 1)
@@ -25,7 +25,7 @@ export class Vec3 {
   }
 
   public static randomOnHemisphere(normal: Vec3): Vec3 {
-    var onUnitSphere = Vec3.randomUnitVector();
+    let onUnitSphere = Vec3.randomUnitVector();
     if (normal.dot(onUnitSphere) > 0) {
       // already in the hemisphere
       return onUnitSphere;
@@ -68,9 +68,9 @@ export class Vec3 {
   }
 
   static refract(uv: Vec3, n: Vec3, eta1_over_eta2: number) {
-    var cosTheta = Math.min(uv.negated().dot(n), 1);
-    var rOutPerp = uv.add(n.scale(cosTheta)).scale(eta1_over_eta2);
-    var rOutParallel = n.scale(-Math.sqrt(1 - rOutPerp.lengthSquared()));
+    let cosTheta = Math.min(uv.negated().dot(n), 1);
+    let rOutPerp = uv.add(n.scale(cosTheta)).scale(eta1_over_eta2);
+    let rOutParallel = n.scale(-Math.sqrt(1 - rOutPerp.lengthSquared()));
     return rOutPerp.add(rOutParallel);
   }
 
@@ -95,7 +95,7 @@ export class Vec3 {
   }
 
   public normalized(): Vec3 {
-    var length = this.length();
+    let length = this.length();
     return this.scale(1.0 / length);
   }
 

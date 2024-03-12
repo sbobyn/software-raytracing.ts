@@ -58,7 +58,7 @@ export class Device {
     this.camera.lookfrom = new Point3(0, 0, 9);
     this.camera.lookAt(new Point3(0, 0, 0));
 
-    var scene = new HittableList();
+    let scene = new HittableList();
     // Materials
     const left_red = new Diffuse(new SolidColor(new Color3(1.0, 0.2, 0.2)));
     const back_green = new Diffuse(new SolidColor(new Color3(0.2, 1.0, 0.2)));
@@ -112,27 +112,27 @@ export class Device {
   }
 
   private in1WkndScene(numBalls: number): HittableList {
-    var scene = new HittableList();
-    for (var a = -numBalls; a < numBalls; a++) {
-      for (var b = -numBalls; b < numBalls; b++) {
-        var chooseMat = Math.random();
-        var center = new Point3(
+    let scene = new HittableList();
+    for (let a = -numBalls; a < numBalls; a++) {
+      for (let b = -numBalls; b < numBalls; b++) {
+        let chooseMat = Math.random();
+        let center = new Point3(
           2 * a + 2 * Math.random(),
           0.2,
           2 * b + 2 * Math.random()
         );
 
         if (center.subtract(new Point3(4, 0.2, 0)).length() > 0.9) {
-          var sphereMat: Material;
+          let sphereMat: Material;
           if (chooseMat < 0.8) {
             // diffuse
-            var albedo = Color3.random().mul(Color3.random());
+            let albedo = Color3.random().mul(Color3.random());
             sphereMat = new Diffuse(new SolidColor(albedo));
             scene.add(new Sphere(center, 0.2, sphereMat));
           } else if (chooseMat < 0.95) {
             // metal
-            var albedo = Color3.random(0.5, 1);
-            var roughness = randomInRange(0, 0.5);
+            let albedo = Color3.random(0.5, 1);
+            let roughness = randomInRange(0, 0.5);
             sphereMat = new Metal(new SolidColor(albedo), roughness);
             scene.add(new Sphere(center, 0.2, sphereMat));
           } else {
@@ -144,17 +144,17 @@ export class Device {
       }
     }
 
-    var groundMat = new Diffuse(
+    let groundMat = new Diffuse(
       new CheckerTextureXYZ(
         new Color3(0.2, 0.3, 0.1),
         new Color3(0.9, 0.9, 0.9),
         0.32
       )
     );
-    var centerMat = new Dielectric(1.5);
-    // var leftMat = new Diffuse(new SolidColor(new Color3(0.4, 0.2, 0.1)));
-    var leftMat = new Diffuse(new ImageTexture("./earthmap.jpg"));
-    var rightMat = new Metal(new SolidColor(new Color3(0.7, 0.6, 0.5)), 0.0);
+    let centerMat = new Dielectric(1.5);
+    // let leftMat = new Diffuse(new SolidColor(new Color3(0.4, 0.2, 0.1)));
+    let leftMat = new Diffuse(new ImageTexture("./earthmap.jpg"));
+    let rightMat = new Metal(new SolidColor(new Color3(0.7, 0.6, 0.5)), 0.0);
 
     scene.add(new Sphere(new Point3(0, -1000, -1), 1000, groundMat));
     scene.add(new Sphere(new Point3(0, 1, 0), 1, centerMat));
@@ -228,7 +228,7 @@ export class Device {
 
   // write color to position (x,y) of the back buffer
   public writePixel(x: number, y: number, color: Color3): void {
-    var index: number = (Math.floor(x) + Math.floor(y) * this.width) * 4;
+    let index: number = (Math.floor(x) + Math.floor(y) * this.width) * 4;
 
     // gamma correction
     if (this.gammaCorrectionEnabled) {
@@ -246,11 +246,11 @@ export class Device {
   // progressive rendering
   // accumulate rays over time
   public writePixelProgressive(x: number, y: number, color: Color3): void {
-    var index: number = (Math.floor(x) + Math.floor(y) * this.width) * 4;
+    let index: number = (Math.floor(x) + Math.floor(y) * this.width) * 4;
 
-    var prevR = this.backbuffer.data[index];
-    var prevG = this.backbuffer.data[index + 1];
-    var prevB = this.backbuffer.data[index + 2];
+    let prevR = this.backbuffer.data[index];
+    let prevG = this.backbuffer.data[index + 1];
+    let prevB = this.backbuffer.data[index + 2];
 
     // gamma correction
     if (this.gammaCorrectionEnabled) {
@@ -259,11 +259,11 @@ export class Device {
       color.b = this.linearToGamma(color.b);
     }
 
-    var newR =
+    let newR =
       this.prevFrameWeight * prevR + this.newFrameWeight * color.r * 255;
-    var newG =
+    let newG =
       this.prevFrameWeight * prevG + this.newFrameWeight * color.g * 255;
-    var newB =
+    let newB =
       this.prevFrameWeight * prevB + this.newFrameWeight * color.b * 255;
 
     this.backbuffer.data[index] = newR;
@@ -279,8 +279,8 @@ export class Device {
   }
 
   public pixelOffset(pixeldu: Vec3, pixeldv: Vec3): Vec3 {
-    var sx = -0.5 + Math.random();
-    var sy = -0.5 + Math.random();
+    let sx = -0.5 + Math.random();
+    let sy = -0.5 + Math.random();
     return pixeldu.scale(sx).add(pixeldv.scale(sy));
   }
 
@@ -296,28 +296,28 @@ export class Device {
       this.numProgressiveSamples = 0;
     }
 
-    var viewportU = this.camera.u.scale(this.camera.viewportWidth);
-    var viewportV = this.camera.v.scale(-this.camera.viewportHeight);
+    let viewportU = this.camera.u.scale(this.camera.viewportWidth);
+    let viewportV = this.camera.v.scale(-this.camera.viewportHeight);
 
     // distance to next pixel
-    var pixeldeltaU: Vec3 = viewportU.scale(1 / this.width);
-    var pixeldeltaV: Vec3 = viewportV.scale(1 / this.height);
+    let pixeldeltaU: Vec3 = viewportU.scale(1 / this.width);
+    let pixeldeltaV: Vec3 = viewportV.scale(1 / this.height);
 
-    var viewportUpperLeft = this.camera.lookfrom
+    let viewportUpperLeft = this.camera.lookfrom
       .add(this.camera.lookdir.scale(this.camera.focalLength))
       .subtract(viewportU.scale(0.5))
       .subtract(viewportV.scale(0.5));
-    var pixel_00: Point3 = viewportUpperLeft.add(
+    let pixel_00: Point3 = viewportUpperLeft.add(
       pixeldeltaU.add(pixeldeltaV).scale(0.5)
     );
 
-    var pixel_ij: Point3;
-    var ray = new Ray(this.camera.lookfrom, new Vec3(0, 0, 0)); // initial dir is a placeholder
-    var pixelColor: Color3;
-    var numRays = this.numSamples;
-    for (var j = 0; j < this.height; j++) {
+    let pixel_ij: Point3;
+    let ray = new Ray(this.camera.lookfrom, new Vec3(0, 0, 0)); // initial dir is a placeholder
+    let pixelColor: Color3;
+    let numRays = this.numSamples;
+    for (let j = 0; j < this.height; j++) {
       pixel_ij = pixel_00.add(pixeldeltaV.scale(j));
-      for (var i = 0; i < this.width; i++) {
+      for (let i = 0; i < this.width; i++) {
         pixelColor = new Color3(0, 0, 0);
         pixel_ij.plusEquals(pixeldeltaU);
 
@@ -325,7 +325,7 @@ export class Device {
         pixelColor.plusEquals(
           this.camera.rayColor(ray, this.scene, this.maxDepth)
         );
-        for (var sample = 1; sample < numRays; sample++) {
+        for (let sample = 1; sample < numRays; sample++) {
           ray.dir = pixel_ij.subtract(this.camera.lookfrom);
           ray.dir.plusEquals(this.pixelOffset(pixeldeltaU, pixeldeltaV));
           pixelColor.plusEquals(
