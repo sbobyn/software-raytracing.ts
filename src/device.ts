@@ -41,8 +41,8 @@ export class Device {
     this.camera.lookfrom = new Point3(5, 2, 3);
     this.camera.lookAt(new Point3(0, 0, -1));
 
-    // this.scene = this.in1WkndScene(2);
-    this.scene = this.cornellBoxScene();
+    this.scene = this.in1WkndScene(2);
+    // this.scene = this.cornellBoxScene();
 
     this.maxDepth = 4;
     this.numSamples = 1;
