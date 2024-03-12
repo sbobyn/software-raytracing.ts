@@ -144,13 +144,14 @@ export class Device {
       }
     }
 
-    let groundMat = new Diffuse(
-      new CheckerTextureXYZ(
-        new Color3(0.2, 0.3, 0.1),
-        new Color3(0.9, 0.9, 0.9),
-        0.32
-      )
-    );
+    // let groundMat = new Diffuse(
+    //   new CheckerTextureXYZ(
+    //     new Color3(0.2, 0.3, 0.1),
+    //     new Color3(0.9, 0.9, 0.9),
+    //     0.32
+    //   )
+    // );
+    let groundMat = new Diffuse(new SolidColor(new Color3(0.5, 0.5, 0.5)));
     let centerMat = new Dielectric(1.5);
     // let leftMat = new Diffuse(new SolidColor(new Color3(0.4, 0.2, 0.1)));
     let leftMat = new Diffuse(new ImageTexture("./earthmap.jpg"));
