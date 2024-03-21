@@ -92,6 +92,7 @@ export class Vec3 {
     this.z *= scalar;
     return this;
   }
+  
   public length(): number {
     return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
   }

@@ -27,7 +27,7 @@ export class Quad implements Hittable {
   */
   hit(ray: Ray, tmin: number, tmax: number, rec: HitRecord): boolean {
     // only hit frontface
-    // if (this.normal.dot(ray.dir) > 0) return false;
+    // if (this.normal.dot(ray.dir) < 0) return false;
 
     let denom = this.normal.dot(ray.dir);
 

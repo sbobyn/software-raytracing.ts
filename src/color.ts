@@ -35,6 +35,13 @@ export class Color3 {
     return new Color3(t * this.r, t * this.g, t * this.b);
   }
 
+  public scaled(scalar: number): Color3 {
+    this.r *= scalar;
+    this.g *= scalar;
+    this.b *= scalar;
+    return this;
+  }
+
   public static readonly BLACK = new Color3(0, 0, 0);
   public static readonly WHITE = new Color3(1, 1, 1);
   public static readonly SKY_BLUE = new Color3(0.5, 0.7, 1);

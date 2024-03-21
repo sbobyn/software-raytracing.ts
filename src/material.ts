@@ -1,8 +1,8 @@
 import { Color3 } from "./color.js";
 import { HitRecord } from "./hittable.js";
 import { Ray } from "./ray.js";
-import { Texture } from "./texture.js";
-import { Vec3 } from "./vector.js";
+import { SolidColor, Texture } from "./texture.js";
+import { Point3, Vec3 } from "./vector.js";
 
 export interface Material {
   scatter(
@@ -11,11 +11,29 @@ export interface Material {
     attenuation: Color3,
     scattered: Ray
   ): boolean;
+
+  emitted(u: number, v: number, p: Point3): Color3;
+}
+
+class BaseMaterial implements Material {
+  scatter(
+    inRay: Ray,
+    rec: HitRecord,
+    attenuation: Color3,
+    scattered: Ray
+  ): boolean {
+    throw new Error("Method not implemented.");
+  }
+  emitted(u: number, v: number, p: Point3): Color3 {
+    return new Color3(0, 0, 0); // Default to no light emitted
+  }
 }
 
 // roughness between 0 and 1
-export class Metal implements Material {
-  constructor(private texture: Texture, private roughness: number = 0) {}
+export class Metal extends BaseMaterial {
+  constructor(private texture: Texture, private roughness: number = 0) {
+    super();
+  }
   scatter(
     inRay: Ray,
     rec: HitRecord,
@@ -37,13 +55,15 @@ export enum Distribution {
   Lambertian,
 }
 
-export class Diffuse implements Material {
+export class Diffuse extends BaseMaterial {
   constructor(
     private texture: Texture,
     private roughness: number = 1,
     private distribution: Distribution = Distribution.Lambertian,
     private absorbtionProbability: number = 0
-  ) {}
+  ) {
+    super();
+  }
 
   scatter(
     inRay: Ray,
@@ -55,11 +75,13 @@ export class Diffuse implements Material {
     switch (this.distribution) {
       case Distribution.Uniform:
         reflected = Vec3.randomOnHemisphere(rec.normal!);
+        break;
       case Distribution.Lambertian:
         reflected = rec.normal!.add(
           Vec3.randomUnitVector().scale(this.roughness)
         );
         if (reflected.nearEquals(Vec3.ZERO)) reflected = rec.normal!;
+        break;
     }
     scattered.orig = rec.p!;
     scattered.dir = reflected;
@@ -76,9 +98,10 @@ export class Diffuse implements Material {
   }
 }
 
-export class Dielectric implements Material {
+export class Dielectric extends BaseMaterial {
   private ir: number;
   constructor(refractiveIndex: number) {
+    super();
     this.ir = refractiveIndex;
   }
 
@@ -117,5 +140,27 @@ export class Dielectric implements Material {
     let r0 = (1 - refIndex) / (1 + refIndex);
     r0 = r0 * r0;
     return r0 + (1 - r0) * Math.pow(1 - cosTheta, 5);
+  }
+}
+
+export class DiffuseLight extends BaseMaterial {
+  private emit: Texture;
+
+  constructor(a: Texture = new SolidColor(Color3.WHITE)) {
+    super();
+    this.emit = a;
+  }
+
+  scatter(
+    inRay: Ray,
+    rec: HitRecord,
+    attenuation: Color3,
+    scattered: Ray
+  ): boolean {
+    return false;
+  }
+
+  emitted(u: number, v: number, p: Point3): Color3 {
+    return this.emit.value(u, v, p);
   }
 }

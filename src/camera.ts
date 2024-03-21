@@ -20,6 +20,8 @@ export class Camera {
   private aspectRatio: number;
   public focalLength: number; // TODO make this private
 
+  public background = Color3.SKY_BLUE;
+
   constructor(vfov: number = 90, aspectRatio: number, focalLength: number) {
     this.lookfrom = new Point3(0, 0, 0);
     this.lookdir = new Point3(0, 0, -1); // looking down -z axis
@@ -62,17 +64,20 @@ export class Camera {
     if (depth < 0) return Color3.BLACK;
 
     let rec = new HitRecord();
-    if (scene.hit(ray, 1e-8, Infinity, rec)) {
-      let scattered = new Ray(rec.p!, new Vec3(0, 0, 0)); // placeholder dir
-      let attenuation = Color3.BLACK; // placeholder
-      if (rec.material!.scatter(ray, rec, attenuation, scattered))
-        return attenuation.mul(this.rayColor(scattered, scene, depth - 1));
-      return Color3.BLACK;
-    }
+    if (!scene.hit(ray, 1e-8, Infinity, rec)) return this.background;
 
-    let unitDir = ray.dir.normalized();
-    let a: number = 0.5 * (unitDir.y + 1);
-    return Color3.WHITE.scale(1 - a).add(Color3.SKY_BLUE.scale(a));
+    let scattered = new Ray(rec.p!, new Vec3(0, 0, 0)); // placeholder dir
+    let attenuation = Color3.BLACK; // placeholder
+    let colorFromEmission = rec.material!.emitted(rec.u!, rec.v!, rec.p!);
+
+    if (!rec.material!.scatter(ray, rec, attenuation, scattered))
+      return colorFromEmission;
+
+    let colorFromScatter = attenuation.mul(
+      this.rayColor(scattered, scene, depth - 1)
+    );
+
+    return colorFromEmission.add(colorFromScatter);
   }
 
   public lookAt(pos: Point3) {

@@ -4,7 +4,13 @@ import { Vec3, Point3 } from "./vector.js";
 import { Camera } from "./camera.js";
 import { Hittable, HittableList } from "./hittable.js";
 import { Sphere } from "./sphere.js";
-import { Dielectric, Diffuse, Material, Metal } from "./material.js";
+import {
+  Dielectric,
+  Diffuse,
+  DiffuseLight,
+  Material,
+  Metal,
+} from "./material.js";
 import { randomInRange } from "./utils.js";
 import ImageTexture, {
   CheckerTextureXYZ,
@@ -46,8 +52,10 @@ export class Device {
     this.camera.lookAt(new Point3(0, 0, -1));
 
     // this.scene = this.in1WkndScene(2);
+    this.scene = this.cornellBoxScene();
+    // this.scene = this.perlinScene();
+    // this.scene = this.simpleLightScene();
     // this.scene = this.cornellBoxScene();
-    this.scene = this.perlinScene();
 
     this.maxDepth = 4;
     this.numSamples = 1;
@@ -57,6 +65,102 @@ export class Device {
     this.cameraMoving = false;
     this.maxProgressiveSamples = 30;
     this.numProgressiveSamples = 0;
+  }
+
+  private cornellBoxScene(): HittableList {
+    const scene = new HittableList();
+
+    const red = new Diffuse(new SolidColor(new Color3(0.65, 0.05, 0.05)));
+    const white = new Diffuse(new SolidColor(new Color3(0.73, 0.73, 0.73)));
+    const green = new Diffuse(new SolidColor(new Color3(0.12, 0.45, 0.15)));
+    const light = new DiffuseLight(new SolidColor(new Color3(2, 2, 2)));
+
+    // left
+    scene.add(
+      new Quad(
+        new Point3(-2, 0, 0),
+        new Vec3(0, 4, 0),
+        new Vec3(0, 0, -4),
+        green
+      )
+    );
+    //right
+    scene.add(
+      new Quad(new Point3(2, 0, -4), new Vec3(0, 4, 0), new Vec3(0, 0, 4), red)
+    );
+    // ceiling
+    scene.add(
+      new Quad(
+        new Point3(-2, 4, 0), // Adjusted position for the light source
+        new Vec3(4, 0, 0),
+        new Vec3(0, 0, -4),
+        white
+      )
+    );
+    // ceiling light
+    scene.add(
+      new Quad(
+        new Point3(-2, 3.99, 0), // Adjusted position for the light source
+        new Vec3(4, 0, 0),
+        new Vec3(0, 0, -4),
+        light
+      )
+    );
+    // floor
+    scene.add(
+      new Quad(
+        new Point3(2, 0, 0), // Adjusted position for the light source
+        new Vec3(-4, 0, 0),
+        new Vec3(0, 0, -4),
+        white
+      )
+    );
+    // back wall
+    scene.add(
+      new Quad(
+        new Point3(2, 0, -4), // Adjusted position for the light source
+        new Vec3(-4, 0, 0),
+        new Vec3(0, 4, 0),
+        white
+      )
+    );
+
+    this.camera.background = new Color3(0.01, 0.01, 0.01);
+
+    this.camera.lookfrom = new Point3(0, 2, 6);
+    this.camera.lookAt(new Point3(0, 2, 0));
+
+    this.camera.updateFOV(40);
+
+    return scene;
+  }
+
+  private simpleLightScene(): HittableList {
+    this.camera.background = new Color3(0.001, 0.001, 0.001);
+    this.camera.lookfrom = new Point3(26, 3, 6);
+    this.camera.lookAt(new Point3(0, 2, 0));
+    this.camera.updateFOV(20);
+
+    let scene = new HittableList();
+
+    let perText = new NoiseTexture(4);
+    scene.add(new Sphere(new Point3(0, -1000, 0), 1000, new Diffuse(perText)));
+    scene.add(new Sphere(new Point3(0, 2, 0), 2, new Diffuse(perText)));
+
+    let difflight = new DiffuseLight(new SolidColor(new Color3(4, 4, 4)));
+
+    scene.add(new Sphere(new Point3(0, 7, 0), 2, difflight));
+
+    scene.add(
+      new Quad(
+        new Point3(3, 1, -2),
+        new Vec3(2, 0, 0),
+        new Vec3(0, 2, 0),
+        difflight
+      )
+    );
+
+    return scene;
   }
 
   private perlinScene(): HittableList {
@@ -72,7 +176,7 @@ export class Device {
     return scene;
   }
 
-  private cornellBoxScene(): HittableList {
+  private simpleQuadsScene(): HittableList {
     this.camera.lookfrom = new Point3(0, 0, 9);
     this.camera.lookAt(new Point3(0, 0, 0));
 
@@ -352,8 +456,8 @@ export class Device {
           );
         }
         if (this.cameraMoving)
-          this.writePixel(i, j, pixelColor.scale(1 / numRays));
-        else this.writePixelProgressive(i, j, pixelColor.scale(1 / numRays));
+          this.writePixel(i, j, pixelColor.scaled(1.0 / numRays));
+        else this.writePixelProgressive(i, j, pixelColor.scaled(1.0 / numRays));
       }
     }
     this.cameraMoving = false;
