@@ -1,6 +1,7 @@
-import { Vec3, Point3 } from "./vector";
-import { Ray } from "./ray";
-import { Material } from "./material";
+import { Vec3, Point3 } from "./vector.js";
+import { Ray } from "./ray.js";
+import { Material } from "./material.js";
+import { AABB } from "./aabb.js";
 
 export class HitRecord {
   constructor(
@@ -33,10 +34,20 @@ export class HitRecord {
 
 export interface Hittable {
   hit(ray: Ray, tmin: number, tmax: number, rec: HitRecord): boolean;
+
+  boundingBox(): AABB;
 }
 
 export class HittableList implements Hittable {
-  constructor(public objects: Hittable[] = []) {}
+  bbox: AABB;
+
+  constructor(public objects: Hittable[] = []) {
+    this.bbox = new AABB();
+  }
+
+  boundingBox(): AABB {
+    return this.bbox;
+  }
 
   public hit(ray: Ray, tmin: number, tmax: number, rec: HitRecord): boolean {
     let temprec = new HitRecord();
@@ -55,6 +66,7 @@ export class HittableList implements Hittable {
 
   public add(object: Hittable) {
     this.objects.push(object);
+    this.bbox = AABB.fromAABBs(this.bbox, object.boundingBox());
   }
 
   public clear() {

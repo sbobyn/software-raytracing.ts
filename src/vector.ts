@@ -92,7 +92,7 @@ export class Vec3 {
     this.z *= scalar;
     return this;
   }
-  
+
   public length(): number {
     return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
   }
@@ -120,6 +120,12 @@ export class Vec3 {
 
   public copy(): Vec3 {
     return new Vec3(this.x, this.y, this.z);
+  }
+
+  public idx(i: number): number {
+    if (i == 2) return this.z;
+    if (i == 1) return this.y;
+    return this.x;
   }
 }
 

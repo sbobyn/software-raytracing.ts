@@ -1,13 +1,16 @@
-import { HitRecord, Hittable } from "./hittable";
-import { Material } from "./material";
-import { Ray } from "./ray";
-import { Point3, Vec3 } from "./vector";
+import { AABB } from "./aabb.js";
+import { HitRecord, Hittable } from "./hittable.js";
+import { Material } from "./material.js";
+import { Ray } from "./ray.js";
+import { Point3, Vec3 } from "./vector.js";
 
 export class Quad implements Hittable {
   // plane contain quad defined by dot(normal, x) = D where x is a point on the plane
   private normal: Vec3;
   private D: number;
   private w: Vec3; // precomputed vector for hit testing
+  private bbox: AABB;
+
   constructor(
     private Q: Point3,
     private u: Vec3,
@@ -18,6 +21,12 @@ export class Quad implements Hittable {
     this.normal = n.normalized();
     this.D = this.normal.dot(Q);
     this.w = n.scale(1 / n.dot(n));
+
+    this.bbox = AABB.fromPoints(Q, Q.add(u).add(v)).pad();
+  }
+
+  boundingBox(): AABB {
+    return this.bbox;
   }
 
   /*

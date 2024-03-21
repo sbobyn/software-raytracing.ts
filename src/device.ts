@@ -18,6 +18,7 @@ import ImageTexture, {
   SolidColor,
 } from "./texture.js";
 import { Quad } from "./quad.js";
+import { BVHNode } from "./bvh.js";
 
 export class Device {
   // the back buffer size is equal to the number of pixels
@@ -60,12 +61,15 @@ export class Device {
     this.maxProgressiveSamples = 30;
     this.numProgressiveSamples = 0;
 
-    // this.scene = this.in1WkndScene(2);
+    this.scene = new HittableList();
+    // this.scene.add(BVHNode.fromHittableList(this.in1WkndScene(10)));
+    // this.scene = this.in1WkndScene(10);
     // this.scene = this.cornellBoxScene();
+    this.scene.add(this.emptyCornellBoxScene());
     // this.scene = this.perlinScene();
     // this.scene = this.simpleLightScene();
     // this.scene = this.simpleQuadsScene();
-    this.scene = this.whitted1980Scene();
+    // this.scene = this.whitted1980Scene();
   }
 
   private whitted1980Scene(): HittableList {
@@ -101,7 +105,7 @@ export class Device {
     return scene;
   }
 
-  private cornellBoxScene(): HittableList {
+  private emptyCornellBoxScene(): HittableList {
     const scene = new HittableList();
 
     const red = new Diffuse(new SolidColor(new Color3(0.65, 0.05, 0.05)));

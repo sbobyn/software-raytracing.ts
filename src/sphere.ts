@@ -1,14 +1,24 @@
-import { HitRecord, Hittable } from "./hittable";
-import { Material } from "./material";
-import { Ray } from "./ray";
-import { Point3, Vec3 } from "./vector";
+import { AABB } from "./aabb.js";
+import { HitRecord, Hittable } from "./hittable.js";
+import { Material } from "./material.js";
+import { Ray } from "./ray.js";
+import { Point3, Vec3 } from "./vector.js";
 
 export class Sphere implements Hittable {
+  private bbox: AABB;
+
   constructor(
     public position: Point3,
     public radius: number,
     public material: Material
-  ) {}
+  ) {
+    let rvec = new Vec3(radius, radius, radius);
+    this.bbox = AABB.fromPoints(position.subtract(rvec), position.add(rvec));
+  }
+
+  boundingBox(): AABB {
+    return this.bbox;
+  }
 
   public hit(ray: Ray, tmin: number, tmax: number, rec: HitRecord): boolean {
     let oc: Vec3 = ray.orig.subtract(this.position);
