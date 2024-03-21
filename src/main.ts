@@ -1,4 +1,4 @@
-import { Device } from "./device.js";
+import { Device, Scene } from "./device.js";
 import { Vec3 } from "./vector.js";
 
 let canvas: HTMLCanvasElement;
@@ -11,10 +11,11 @@ let heightForm: HTMLFormElement;
 let bounceDepthForm: HTMLFormElement;
 let numSamplesForm: HTMLFormElement;
 let frameWindowLengthForm: HTMLFormElement;
-let numBallsForm: HTMLFormElement;
 let vfovForm: HTMLFormElement;
 
 let gammaCorrectionCheckbox: HTMLInputElement;
+
+let sceneSelect: HTMLSelectElement;
 
 let device: Device;
 
@@ -71,16 +72,54 @@ function init() {
   );
   frameWindowLengthForm.addEventListener("submit", changeFrameWindowLength);
 
-  numBallsForm = <HTMLFormElement>document.getElementById("numBallsForm");
-  numBallsForm.addEventListener("submit", changeNumBalls);
-
   vfovForm = <HTMLFormElement>document.getElementById("vfovForm");
   vfovForm.addEventListener("submit", changevFOV);
+
+  sceneSelect = <HTMLSelectElement>document.getElementById("scenesSelect");
+  sceneSelect.addEventListener("change", changeScene);
 
   requestAnimationFrame(drawingLoop);
 }
 
 // USER INPUT ------------------------------------------------------
+
+function changeScene(event: Event) {
+  event.preventDefault();
+  let selectedValue = sceneSelect.value;
+  console.log("scene selected:", selectedValue);
+
+  let scene: Scene;
+  switch (selectedValue) {
+    case "1wkndReduced":
+      scene = Scene.WkndReduced;
+      break;
+    case "1wknd":
+      scene = Scene.Wknd;
+      break;
+    case "whitted":
+      scene = Scene.Whitted1980;
+      break;
+    case "textures":
+      scene = Scene.Textures;
+      break;
+    case "perlin":
+      scene = Scene.PerlinLights;
+      break;
+    case "emptyCornell":
+      scene = Scene.CornellEmpty;
+      break;
+    case "cornell":
+      scene = Scene.Cornell;
+      break;
+    case "1wknd2":
+      scene = Scene.Wknd2;
+      break;
+    default:
+      scene = Scene.WkndReduced;
+  }
+
+  device.changeScene(scene);
+}
 
 function changevFOV(event: Event) {
   event.preventDefault();
@@ -89,15 +128,6 @@ function changevFOV(event: Event) {
   console.log("vfov submitted:", vfov);
 
   device.changeFOV(vfov);
-}
-
-function changeNumBalls(event: Event) {
-  event.preventDefault();
-  const input = <HTMLInputElement>document.getElementById("numBallsInput");
-  const numBalls: number = parseInt(input.value);
-  console.log("numBalls submitted:", numBalls);
-
-  device.changeNumBalls(numBalls);
 }
 
 function changeCanvasHeight(event: Event) {

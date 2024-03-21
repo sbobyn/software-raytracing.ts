@@ -20,10 +20,24 @@
     ></canvas>
     <br />
     fps: <span id="averageFPS"></span>
-<label>
-  <input type="checkbox" id="gammaCheckbox" name="gammaCheckbox" checked>
-  Gamma correction 
-</label>
+    
+    <label>
+      <input type="checkbox" id="gammaCheckbox" name="gammaCheckbox" checked>
+      Gamma correction 
+    </label>
+
+    <br/>
+    <label for="scenesSelect">Select a scene: </label>
+    <select id="scenesSelect">
+      <option value="1wkndReduced">1Wknd Final -- reduced</option>
+      <option value="1wknd">1Wknd Final</option>
+      <option value="whitted">Whitted 1980</option>
+      <option value="textures">Textures</option>
+      <option value="perlin">Perlin texture with lights</option>
+      <option value="emptyCornell">Empty Cornell Box</option>
+      <option value="cornell">Cornell Box</option> 
+      <option value="1wknd2">1Wknd Pt2 Final</option> 
+    </select>
 
     <form id="heightForm" action="/submit-form" method="post">
       <label for="heightInput">Number of pixels:<span id="heightSliderValue">150</span></label></label>
@@ -68,7 +82,7 @@
       <button type="submit">Submit</button>
     </form>
     <form id="frameWindowLengthForm" action="/submit-form" method="post">
-      <label for="frameWindowLengthInput">Progressive rendering window length:<span id="frameWindowLengthSliderValue">30</span></label></label>
+      <label for="frameWindowLengthInput">Progressive rendering window length:<span id="frameWindowLengthSliderValue">10</span></label></label>
       <input
         type="range"
         id="frameWindowLengthInput"
@@ -76,22 +90,8 @@
         min="1"
         max="30"
         step="1"
-        value="30"
+        value="10"
         oninput="document.getElementById('frameWindowLengthSliderValue').textContent = value"
-      />
-      <button type="submit">Submit</button>
-    </form>
-    <form id="numBallsForm" action="/submit-form" method="post">
-      <label for="numBallsInput">Number of balls:<span id="numBallsSliderValue">3</span></label></label>
-      <input
-        type="range"
-        id="numBallsInput"
-        name="numBallsInput"
-        min="0"
-        max="10"
-        step="1"
-        value="3"
-        oninput="document.getElementById('numBallsSliderValue').textContent = value"
       />
       <button type="submit">Submit</button>
     </form>
