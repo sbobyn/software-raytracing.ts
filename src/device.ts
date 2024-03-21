@@ -51,12 +51,6 @@ export class Device {
     this.camera.lookfrom = new Point3(5, 2, 3);
     this.camera.lookAt(new Point3(0, 0, -1));
 
-    // this.scene = this.in1WkndScene(2);
-    this.scene = this.cornellBoxScene();
-    // this.scene = this.perlinScene();
-    // this.scene = this.simpleLightScene();
-    // this.scene = this.cornellBoxScene();
-
     this.maxDepth = 4;
     this.numSamples = 1;
     this.prevFrameWeight = 0.0;
@@ -65,6 +59,46 @@ export class Device {
     this.cameraMoving = false;
     this.maxProgressiveSamples = 30;
     this.numProgressiveSamples = 0;
+
+    // this.scene = this.in1WkndScene(2);
+    // this.scene = this.cornellBoxScene();
+    // this.scene = this.perlinScene();
+    // this.scene = this.simpleLightScene();
+    // this.scene = this.simpleQuadsScene();
+    this.scene = this.whitted1980Scene();
+  }
+
+  private whitted1980Scene(): HittableList {
+    const scene = new HittableList();
+
+    const groundTexture = new Diffuse(
+      new CheckerTextureXYZ(Color3.RED, Color3.YELLOW, 0.5)
+    );
+    const leftBallTex = new Metal(new SolidColor(Color3.WHITE.scale(0.8)), 0.1);
+    const glassTex = new Dielectric(1.5);
+    const lightTex = new DiffuseLight(new SolidColor(new Color3(1, 1, 1)));
+
+    scene.add(
+      new Quad(
+        new Point3(5, 0, 5), // Adjusted position for the light source
+        new Vec3(-10, 0, 0),
+        new Vec3(0, 0, -10),
+        groundTexture
+      )
+    );
+    scene.add(new Sphere(new Point3(2, 10, 7), 2, lightTex));
+    scene.add(new Sphere(new Point3(0, 1.5, 0), 1, leftBallTex));
+    scene.add(new Sphere(new Point3(1.5, 2.3, 1.3), 1, glassTex));
+    scene.add(new Sphere(new Point3(1.5, 2.3, 1.3), -0.9, glassTex));
+
+    this.camera.background = new Color3(0.05, 0.1, 0.25);
+
+    this.camera.lookfrom = new Point3(1.5, 2.4, 4);
+    this.camera.lookAt(new Point3(1.5, 2, 1));
+
+    this.maxDepth = 6;
+
+    return scene;
   }
 
   private cornellBoxScene(): HittableList {
