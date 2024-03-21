@@ -2,6 +2,7 @@ import { Device, Scene } from "./device.js";
 import { Vec3 } from "./vector.js";
 
 let canvas: HTMLCanvasElement;
+let canvasRect: DOMRect;
 
 // can be larger than canvas pixel buffer
 let canvasScaledWidth: number;
@@ -181,12 +182,23 @@ function handleKeyUp(event: KeyboardEvent) {
   keyStates[event.key.toLowerCase()] = false;
 }
 
+function updateCanvasRect() {
+  canvasRect = canvas.getBoundingClientRect();
+}
+
 function handleMouseDown(event: MouseEvent) {
+  updateCanvasRect();
+
+  // Calculate mouse position relative to the canvas
+  const mouseX = event.clientX - canvasRect.left;
+  const mouseY = event.clientY - canvasRect.top;
+
+  // Check if mouse is outside canvas bounds
   if (
-    event.clientX < 0 ||
-    event.clientX >= canvasScaledWidth ||
-    event.clientY < 0 ||
-    event.clientY >= canvasScaledHeight
+    mouseX < 0 ||
+    mouseX >= canvasRect.width ||
+    mouseY < 0 ||
+    mouseY >= canvasRect.height
   )
     return;
   isDragging = true;
