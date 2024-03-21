@@ -1,4 +1,5 @@
 import { Color3 } from "./color.js";
+import { Perlin } from "./perlin.js";
 import { Point3 } from "./vector.js";
 
 export interface Texture {
@@ -82,7 +83,18 @@ export default class ImageTexture implements Texture {
 }
 
 export class NoiseTexture implements Texture {
+  noise: Perlin;
+  scale: number;
+
+  constructor(scale: number) {
+    this.noise = new Perlin();
+    this.scale = scale;
+  }
+
   value(u: number, v: number, point: Point3): Color3 {
-    throw new Error("Method not implemented.");
+    let s = point.scale(this.scale);
+    return Color3.WHITE.scale(
+      0.5 * (1.0 + Math.sin(s.z + 10 * this.noise.turb(s)))
+    );
   }
 }

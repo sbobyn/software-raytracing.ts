@@ -86,6 +86,12 @@ export class Vec3 {
     return new Vec3(this.x * scalar, this.y * scalar, this.z * scalar);
   }
 
+  public scaled(scalar: number): Vec3 {
+    this.x *= scalar;
+    this.y *= scalar;
+    this.z *= scalar;
+    return this;
+  }
   public length(): number {
     return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
   }
@@ -109,6 +115,10 @@ export class Vec3 {
       this.z * other.x - this.x * other.z,
       this.x * other.y - this.y * other.x
     );
+  }
+
+  public copy(): Vec3 {
+    return new Vec3(this.x, this.y, this.z);
   }
 }
 

@@ -6,7 +6,11 @@ import { Hittable, HittableList } from "./hittable.js";
 import { Sphere } from "./sphere.js";
 import { Dielectric, Diffuse, Material, Metal } from "./material.js";
 import { randomInRange } from "./utils.js";
-import ImageTexture, { CheckerTextureXYZ, SolidColor } from "./texture.js";
+import ImageTexture, {
+  CheckerTextureXYZ,
+  NoiseTexture,
+  SolidColor,
+} from "./texture.js";
 import { Quad } from "./quad.js";
 
 export class Device {
@@ -41,8 +45,9 @@ export class Device {
     this.camera.lookfrom = new Point3(5, 2, 3);
     this.camera.lookAt(new Point3(0, 0, -1));
 
-    this.scene = this.in1WkndScene(2);
+    // this.scene = this.in1WkndScene(2);
     // this.scene = this.cornellBoxScene();
+    this.scene = this.perlinScene();
 
     this.maxDepth = 4;
     this.numSamples = 1;
@@ -52,6 +57,19 @@ export class Device {
     this.cameraMoving = false;
     this.maxProgressiveSamples = 30;
     this.numProgressiveSamples = 0;
+  }
+
+  private perlinScene(): HittableList {
+    this.camera.lookfrom = new Point3(13, 2, 3);
+    this.camera.lookAt(new Point3(0, 0, 0));
+    this.camera.updateFOV(20);
+
+    let scene = new HittableList();
+    let perText = new NoiseTexture(4);
+    scene.add(new Sphere(new Point3(0, -1000, 0), 1000, new Diffuse(perText)));
+    scene.add(new Sphere(new Point3(0, 2, 0), 2, new Diffuse(perText)));
+
+    return scene;
   }
 
   private cornellBoxScene(): HittableList {
