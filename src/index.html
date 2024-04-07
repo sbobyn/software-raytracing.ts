@@ -20,13 +20,13 @@
     ></canvas>
     <br />
     fps: <span id="averageFPS"></span>
-    
+
     <label>
-      <input type="checkbox" id="gammaCheckbox" name="gammaCheckbox" checked>
-      Gamma correction 
+      <input type="checkbox" id="gammaCheckbox" name="gammaCheckbox" checked />
+      Gamma correction
     </label>
 
-    <br/>
+    <br />
     <label for="scenesSelect">Select a scene: </label>
     <select id="scenesSelect">
       <option value="1wkndReduced">1Wknd Final -- reduced</option>
@@ -35,12 +35,14 @@
       <option value="textures">Textures</option>
       <option value="perlin">Perlin texture with lights</option>
       <option value="emptyCornell">Empty Cornell Box</option>
-      <option value="cornell">Cornell Box</option> 
-      <option value="1wknd2">1Wknd Pt2 Final</option> 
+      <option value="cornell">Cornell Box</option>
+      <option value="1wknd2">1Wknd Pt2 Final</option>
     </select>
 
     <form id="heightForm" action="/submit-form" method="post">
-      <label for="heightInput">Number of pixels:<span id="heightSliderValue">150</span></label></label>
+      <label for="heightInput"
+        >Number of pixels:<span id="heightSliderValue">150</span></label
+      >
       <input
         type="range"
         id="heightInput"
@@ -54,7 +56,9 @@
       <button type="submit">Submit</button>
     </form>
     <form id="bounceDepthForm" action="/submit-form" method="post">
-      <label for="bounceDepthInput">Number of bounces:<span id="bounceDepthSliderValue">4</span></label></label>
+      <label for="bounceDepthInput"
+        >Number of bounces:<span id="bounceDepthSliderValue">4</span></label
+      >
       <input
         type="range"
         id="bounceDepthInput"
@@ -67,8 +71,12 @@
       />
       <button type="submit">Submit</button>
     </form>
-      <form id="numSamplesForm" action="/submit-form" method="post">
-      <label for="numSamplesInput">Number of samples per pixel:<span id="numSamplesSliderValue">1</span></label></label>
+    <form id="numSamplesForm" action="/submit-form" method="post">
+      <label for="numSamplesInput"
+        >Number of samples per pixel:<span id="numSamplesSliderValue"
+          >1</span
+        ></label
+      >
       <input
         type="range"
         id="numSamplesInput"
@@ -82,7 +90,12 @@
       <button type="submit">Submit</button>
     </form>
     <form id="frameWindowLengthForm" action="/submit-form" method="post">
-      <label for="frameWindowLengthInput">Progressive rendering window length:<span id="frameWindowLengthSliderValue">10</span></label></label>
+      <label for="frameWindowLengthInput"
+        >Progressive rendering window length:<span
+          id="frameWindowLengthSliderValue"
+          >10</span
+        ></label
+      >
       <input
         type="range"
         id="frameWindowLengthInput"
@@ -95,8 +108,10 @@
       />
       <button type="submit">Submit</button>
     </form>
-     <form id="vfovForm" action="/submit-form" method="post">
-      <label for="vfovInput">Field of View:<span id="vfovSliderValue">90</span></label></label>
+    <form id="vfovForm" action="/submit-form" method="post">
+      <label for="vfovInput"
+        >Field of View:<span id="vfovSliderValue">90</span></label
+      >
       <input
         type="range"
         id="vfovInput"
@@ -108,6 +123,6 @@
         oninput="document.getElementById('vfovSliderValue').textContent = value"
       />
       <button type="submit">Submit</button>
-    </form>    
+    </form>
   </body>
 </html>
