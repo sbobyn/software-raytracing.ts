@@ -114,6 +114,7 @@ export class Device {
 
   public changeFOV(newValue: number) {
     this.camera.updateFOV(newValue);
+    this.clear();
   }
 
   public changeNumSamples(newNum: number) {
