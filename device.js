@@ -57,6 +57,7 @@ var Device = /** @class */ (function () {
         }
         this.scene = new HittableList();
         this.scene.add(BVHNode.fromHittableList(scene));
+        this.clear();
     };
     Device.prototype.changeMaxDepth = function (newDepth) {
         this.maxDepth = newDepth;
@@ -94,10 +95,7 @@ var Device = /** @class */ (function () {
         this.cameraMoving = true;
     };
     Device.prototype.clear = function () {
-        // clear canvas with black
-        this.context.clearRect(0, 0, this.width, this.height);
-        // flush cleared front buffer into back buffer
-        this.backbuffer = this.context.getImageData(0, 0, this.width, this.height);
+        this.backbuffer.data.fill(0);
     };
     // once everything ready, flush the back buffer into the front
     Device.prototype.present = function () {
