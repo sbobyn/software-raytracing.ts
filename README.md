@@ -2,6 +2,10 @@
 
 This is a super simple realtime ray tracer following Peter Shirley's [Ray Tracing in One Weekend](https://raytracing.github.io/) series. The implementation is purely written in TypeScript and the rendering is purely written on the CPU (i.e. no graphics APIs). As such, it is extremely inefficient and low quality, but it can still run in real time!
 
+A live demo is available [here](https://sbobyn.github.io/software-raytracing.ts/)
+
+To build the code locally, ensure TypeScript is installed, run `make` and open up the build directory on a locally hosted server.
+
 # Camera Controls
 
 Use WASD to move around the scene and click and drag on the canvas to look aroud.
