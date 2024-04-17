@@ -16,6 +16,9 @@ Use WASD to move around the scene and click and drag on the canvas to look aroud
 
 # To do
 
+- canvas appears smaller when high-dpi displays detected
+  - need to normallize canvas size across dpi https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio
+- test on other browsers, only tested on Chrome so far
 - add high-res offline render feature. This should be offloaded to a background thread so UI isn't blocked
 - bvh toggle in the UI to evaluate performance increase
 - visualize BVH implementation

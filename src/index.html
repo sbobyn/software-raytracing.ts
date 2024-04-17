@@ -41,16 +41,16 @@
 
     <form id="heightForm" action="/submit-form" method="post">
       <label for="heightInput"
-        >Number of pixels:<span id="heightSliderValue">150</span></label
+        >Number of pixels:<span id="heightSliderValue">100</span></label
       >
       <input
         type="range"
         id="heightInput"
         name="heightInput"
         min="10"
-        max="300"
+        max="200"
         step="10"
-        value="150"
+        value="100"
         oninput="document.getElementById('heightSliderValue').textContent = value"
       />
       <button type="submit">Submit</button>

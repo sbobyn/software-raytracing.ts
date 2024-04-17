@@ -108,6 +108,7 @@ export class Device {
     this.width = Math.floor(newHeight * this.aspectRatio);
     this.canvas.width = this.width;
     this.camera.updateAspectRatio(this.width / this.height);
+    this.backbuffer = this.context.getImageData(0, 0, this.width, this.height);
     this.clear();
   }
 
