@@ -202,6 +202,7 @@ var Device = /** @class */ (function () {
         scene.add(new Sphere(new Point3(1.5, 2.3, 1.3), 1, glassTex));
         scene.add(new Sphere(new Point3(1.5, 2.3, 1.3), -0.9, glassTex));
         this.camera.background = new Color3(0.05, 0.1, 0.25);
+        this.camera.updateFOV(90);
         this.camera.lookfrom = new Point3(1.5, 2.4, 4);
         this.camera.lookAt(new Point3(1.5, 2, 1));
         this.maxDepth = 6;
