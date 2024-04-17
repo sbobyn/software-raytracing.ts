@@ -73,6 +73,7 @@ var Device = /** @class */ (function () {
     };
     Device.prototype.changeFOV = function (newValue) {
         this.camera.updateFOV(newValue);
+        this.clear();
     };
     Device.prototype.changeNumSamples = function (newNum) {
         this.numSamples = newNum;
