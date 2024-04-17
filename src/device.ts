@@ -95,6 +95,7 @@ export class Device {
 
     this.scene = new HittableList();
     this.scene.add(BVHNode.fromHittableList(scene));
+    this.clear();
   }
 
   public changeMaxDepth(newDepth: number) {
@@ -144,10 +145,7 @@ export class Device {
   }
 
   public clear() {
-    // clear canvas with black
-    this.context.clearRect(0, 0, this.width, this.height);
-    // flush cleared front buffer into back buffer
-    this.backbuffer = this.context.getImageData(0, 0, this.width, this.height);
+    this.backbuffer.data.fill(0);
   }
 
   // once everything ready, flush the back buffer into the front
