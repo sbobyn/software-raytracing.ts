@@ -24,7 +24,7 @@ deploy:
 	git add .
 
 	# Commit the changes
-	git commit -m "Automated deployment: $(date)"
+	git diff --staged --quiet || git commit -m "Automated deployment: $(date)"
 
 	# push changes
 	git subtree push --prefix build origin gh-pages
