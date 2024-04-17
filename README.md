@@ -16,12 +16,24 @@ Use WASD to move around the scene and click and drag on the canvas to look aroud
 
 # To do
 
+Bugs
+
 - canvas appears smaller when high-dpi displays detected
   - need to normallize canvas size across dpi https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio
 - test on other browsers, only tested on Chrome so far
+
+UI
+
 - add high-res offline render feature. This should be offloaded to a background thread so UI isn't blocked
 - bvh toggle in the UI to evaluate performance increase
 - visualize BVH implementation
+- scene editor: edit textures, lights, etc. in the realtime canvas
+- add more debug info
+  - number of checks in ray intersection tests, etc.
+
+Features
+
+- implement in C/C++ and compare realtime performance
 - Ray Tracing in One Weekend
   - depth of field / defocus blur. To physically simulate this requires many rays and can't be done in realtime with this simple implementation. I may leave this. a fast heuristic could be to add a depth buffer and a blur filter that blurs pixels proportionally to their buffer's distance from the focal length.
 - Ray Tracing in One Weekend: The Next Week
