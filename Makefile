@@ -9,8 +9,6 @@ clean:
 	rm -rf build
 
 deploy:
-	#!/bin/sh
-
 	git checkout gh-pages
 
 	set -e # stop if error occurs
@@ -18,7 +16,7 @@ deploy:
 	# Checkout the main branch and pull the latest changes
 	git merge main -m "Merge main into gh-pages"
 
-	make
+	make clean && make build
 
 	# Add all changes to git
 	git add .
