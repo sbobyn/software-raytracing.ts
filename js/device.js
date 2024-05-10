@@ -323,7 +323,7 @@ var Device = /** @class */ (function () {
         var groundMat = new Diffuse(new SolidColor(new Color3(0.5, 0.5, 0.5)));
         var centerMat = new Dielectric(1.5);
         // let leftMat = new Diffuse(new SolidColor(new Color3(0.4, 0.2, 0.1)));
-        var leftMat = new Diffuse(new ImageTexture("./earthmap.jpg"));
+        var leftMat = new Diffuse(new ImageTexture("./images/earthmap.jpg"));
         var rightMat = new Metal(new SolidColor(new Color3(0.7, 0.6, 0.5)), 0.0);
         scene.add(new Sphere(new Point3(0, -1000, -1), 1000, groundMat));
         scene.add(new Sphere(new Point3(0, 1, 0), 1, centerMat));
