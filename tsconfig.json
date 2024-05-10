@@ -3,7 +3,7 @@
     "moduleResolution": "Node",
     "module": "es6",
     "target": "es5",
-    "outDir": "./build",
+    "outDir": "./demo/js",
     "rootDir": "./src",
     "strict": true // Enable all strict type-checking options
   },

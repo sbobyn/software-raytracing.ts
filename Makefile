@@ -2,11 +2,12 @@ default: build
 
 build: src/* 
 	npx tsc
-	cp src/index.html build
-	cp src/images/* build
+
+serve: 
+	servez demo
 
 clean:
-	rm -rf build
+	rm demo/*.js*
 
 deploy:
 	./deploy.sh

@@ -526,7 +526,7 @@ export class Device {
     let groundMat = new Diffuse(new SolidColor(new Color3(0.5, 0.5, 0.5)));
     let centerMat = new Dielectric(1.5);
     // let leftMat = new Diffuse(new SolidColor(new Color3(0.4, 0.2, 0.1)));
-    let leftMat = new Diffuse(new ImageTexture("./earthmap.jpg"));
+    let leftMat = new Diffuse(new ImageTexture("./images/earthmap.jpg"));
     let rightMat = new Metal(new SolidColor(new Color3(0.7, 0.6, 0.5)), 0.0);
 
     scene.add(new Sphere(new Point3(0, -1000, -1), 1000, groundMat));

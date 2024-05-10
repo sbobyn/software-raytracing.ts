@@ -12,7 +12,10 @@ echo -e "\nMerging main into gh-pages..."
 git merge main -m "Merge main into gh-pages"
 
 echo -e "\nCleaning and building new changes..."
-make clean && make build
+rm -rf build
+rm -rf demo/js/
+make
+cp -r demo build
 
 echo -e "\nAdding all changes to git..."
 git add .

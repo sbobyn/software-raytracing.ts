@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Software Raytracing</title>
+    <style>
+      canvas {
+        width: 600px;
+        height: 400px;
+        image-rendering: pixelated;
+      }
+    </style>
+    <script type="module" src="./js/main.js"></script>
+  </head>
+  <body>
+    <canvas
+      id="frontBuffer"
+      width="150"
+      height="100"
+      style="background-color: black"
+    ></canvas>
+    <br />
+    fps: <span id="averageFPS"></span>
+
+    <label>
+      <input type="checkbox" id="gammaCheckbox" name="gammaCheckbox" checked />
+      Gamma correction
+    </label>
+
+    <br />
+    <label for="scenesSelect">Select a scene: </label>
+    <select id="scenesSelect">
+      <option value="1wkndReduced">1Wknd Final -- reduced</option>
+      <option value="1wknd">1Wknd Final</option>
+      <option value="whitted">Whitted 1980</option>
+      <!-- <option value="textures">Textures</option> -->
+      <option value="perlin">Perlin texture with lights</option>
+      <option value="emptyCornell">Empty Cornell Box</option>
+      <!-- <option value="cornell">Cornell Box</option> -->
+      <!-- <option value="1wknd2">1Wknd Pt2 Final</option> -->
+    </select>
+
+    <form id="heightForm" action="/submit-form" method="post">
+      <label for="heightInput"
+        >Number of pixels:<span id="heightSliderValue">100</span></label
+      >
+      <input
+        type="range"
+        id="heightInput"
+        name="heightInput"
+        min="10"
+        max="200"
+        step="10"
+        value="100"
+        oninput="document.getElementById('heightSliderValue').textContent = value"
+      />
+      <button type="submit">Submit</button>
+    </form>
+    <form id="bounceDepthForm" action="/submit-form" method="post">
+      <label for="bounceDepthInput"
+        >Number of bounces:<span id="bounceDepthSliderValue">4</span></label
+      >
+      <input
+        type="range"
+        id="bounceDepthInput"
+        name="bounceDepthInput"
+        min="0"
+        max="10"
+        step="1"
+        value="4"
+        oninput="document.getElementById('bounceDepthSliderValue').textContent = value"
+      />
+      <button type="submit">Submit</button>
+    </form>
+    <form id="numSamplesForm" action="/submit-form" method="post">
+      <label for="numSamplesInput"
+        >Number of samples per pixel:<span id="numSamplesSliderValue"
+          >1</span
+        ></label
+      >
+      <input
+        type="range"
+        id="numSamplesInput"
+        name="numSamplesInput"
+        min="1"
+        max="10"
+        step="1"
+        value="1"
+        oninput="document.getElementById('numSamplesSliderValue').textContent = value"
+      />
+      <button type="submit">Submit</button>
+    </form>
+    <form id="frameWindowLengthForm" action="/submit-form" method="post">
+      <label for="frameWindowLengthInput"
+        >Progressive rendering window length:<span
+          id="frameWindowLengthSliderValue"
+          >10</span
+        ></label
+      >
+      <input
+        type="range"
+        id="frameWindowLengthInput"
+        name="frameWindowLengthInput"
+        min="1"
+        max="30"
+        step="1"
+        value="10"
+        oninput="document.getElementById('frameWindowLengthSliderValue').textContent = value"
+      />
+      <button type="submit">Submit</button>
+    </form>
+    <form id="vfovForm" action="/submit-form" method="post">
+      <label for="vfovInput"
+        >Field of View:<span id="vfovSliderValue">90</span></label
+      >
+      <input
+        type="range"
+        id="vfovInput"
+        name="vfovInput"
+        min="20"
+        max="150"
+        step="10"
+        value="90"
+        oninput="document.getElementById('vfovSliderValue').textContent = value"
+      />
+      <button type="submit">Submit</button>
+    </form>
+    <h3>Camera controls</h3>
+    <ul>
+      <li>WASD: move/translate position</li>
+      <li>Click and drag: look around/orient direction</li>
+    </ul>
+  </body>
+</html>
