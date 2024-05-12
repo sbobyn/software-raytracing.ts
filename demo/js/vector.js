@@ -116,6 +116,9 @@ var Vec3 = /** @class */ (function () {
             return this.y;
         return this.x;
     };
+    Vec3.prototype.toString = function () {
+        return "(".concat(this.x.toFixed(2), ", ").concat(this.y.toFixed(2), ", ").concat(this.z.toFixed(2), ")");
+    };
     Vec3.ZERO = new Vec3(0, 0, 0);
     return Vec3;
 }());

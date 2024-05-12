@@ -127,6 +127,10 @@ export class Vec3 {
     if (i == 1) return this.y;
     return this.x;
   }
+
+  public toString() {
+    return `(${this.x.toFixed(2)}, ${this.y.toFixed(2)}, ${this.z.toFixed(2)})`;
+  }
 }
 
 export class Point3 extends Vec3 {

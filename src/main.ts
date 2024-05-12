@@ -20,10 +20,14 @@ let sceneSelect: HTMLSelectElement;
 
 let device: Device;
 
-// fps lets
+// fps
 let divAverageFPS: HTMLDivElement;
 let prevTime = performance.now();
 const lastFPSValues: number[] = new Array(60);
+
+// camera spans
+let cameraPosSpan: HTMLSpanElement;
+let cameraLookSpan: HTMLSpanElement;
 
 document.addEventListener("DOMContentLoaded", init, false);
 
@@ -57,6 +61,11 @@ function init() {
   gammaCorrectionCheckbox.addEventListener("change", toggleGammaCorrection);
 
   divAverageFPS = <HTMLDivElement>document.getElementById("averageFPS");
+
+  cameraPosSpan = <HTMLSpanElement>document.getElementById("cameraPosSpan");
+  cameraLookSpan = <HTMLSpanElement>document.getElementById("cameraLookSpan");
+  cameraPosSpan.textContent = device.camera.lookfrom.toString();
+  cameraLookSpan.textContent = device.camera.lookdir.toString();
 
   heightForm = <HTMLFormElement>document.getElementById("heightForm");
   heightForm.addEventListener("submit", changeCanvasHeight);
@@ -119,6 +128,9 @@ function changeScene(event: Event) {
   }
 
   device.changeScene(scene);
+
+  cameraLookSpan.textContent = device.camera.lookdir.toString();
+  cameraPosSpan.textContent = device.camera.lookfrom.toString();
 }
 
 function changevFOV(event: Event) {
@@ -218,6 +230,8 @@ function handleMouseMove(event: MouseEvent) {
 
   device.rotateCamera(deltaX, deltaY);
 
+  cameraLookSpan.textContent = device.camera.lookdir.toString();
+
   lastMouseX = event.clientX;
   lastMouseY = event.clientY;
 }
@@ -237,6 +251,8 @@ function changeCameraPosition(deltaTime: number) {
     moveDir = moveDir.normalized();
     device.moveCamera(moveDir, deltaTime);
   }
+
+  cameraPosSpan.textContent = device.camera.lookfrom.toString();
 }
 
 function addMouseListeners() {
@@ -276,6 +292,8 @@ function handleTouchMove(e: TouchEvent) {
   const deltaY = (touch.clientY - lastMouseY) * lookSensitivity;
 
   device.rotateCamera(deltaX, deltaY);
+
+  cameraLookSpan.textContent = device.camera.lookdir.toString();
 
   lastMouseX = touch.clientX;
   lastMouseY = touch.clientY;

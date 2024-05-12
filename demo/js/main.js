@@ -13,10 +13,13 @@ var vfovForm;
 var gammaCorrectionCheckbox;
 var sceneSelect;
 var device;
-// fps lets
+// fps
 var divAverageFPS;
 var prevTime = performance.now();
 var lastFPSValues = new Array(60);
+// camera spans
+var cameraPosSpan;
+var cameraLookSpan;
 document.addEventListener("DOMContentLoaded", init, false);
 // input handling
 var keyStates = {};
@@ -38,6 +41,10 @@ function init() {
     gammaCorrectionCheckbox = (document.getElementById("gammaCheckbox"));
     gammaCorrectionCheckbox.addEventListener("change", toggleGammaCorrection);
     divAverageFPS = document.getElementById("averageFPS");
+    cameraPosSpan = document.getElementById("cameraPosSpan");
+    cameraLookSpan = document.getElementById("cameraLookSpan");
+    cameraPosSpan.textContent = device.camera.lookfrom.toString();
+    cameraLookSpan.textContent = device.camera.lookdir.toString();
     heightForm = document.getElementById("heightForm");
     heightForm.addEventListener("submit", changeCanvasHeight);
     bounceDepthForm = document.getElementById("bounceDepthForm");
@@ -87,6 +94,8 @@ function changeScene(event) {
             scene = Scene.WkndReduced;
     }
     device.changeScene(scene);
+    cameraLookSpan.textContent = device.camera.lookdir.toString();
+    cameraPosSpan.textContent = device.camera.lookfrom.toString();
 }
 function changevFOV(event) {
     event.preventDefault();
@@ -161,6 +170,7 @@ function handleMouseMove(event) {
     var deltaX = (event.clientX - lastMouseX) * lookSensitivity;
     var deltaY = (event.clientY - lastMouseY) * lookSensitivity;
     device.rotateCamera(deltaX, deltaY);
+    cameraLookSpan.textContent = device.camera.lookdir.toString();
     lastMouseX = event.clientX;
     lastMouseY = event.clientY;
 }
@@ -181,6 +191,7 @@ function changeCameraPosition(deltaTime) {
         moveDir = moveDir.normalized();
         device.moveCamera(moveDir, deltaTime);
     }
+    cameraPosSpan.textContent = device.camera.lookfrom.toString();
 }
 function addMouseListeners() {
     document.addEventListener("mousedown", handleMouseDown, false);
@@ -211,6 +222,7 @@ function handleTouchMove(e) {
     var deltaX = (touch.clientX - lastMouseX) * lookSensitivity;
     var deltaY = (touch.clientY - lastMouseY) * lookSensitivity;
     device.rotateCamera(deltaX, deltaY);
+    cameraLookSpan.textContent = device.camera.lookdir.toString();
     lastMouseX = touch.clientX;
     lastMouseY = touch.clientY;
 }
