@@ -20,17 +20,15 @@ var lastFPSValues = new Array(60);
 document.addEventListener("DOMContentLoaded", init, false);
 // input handling
 var keyStates = {};
-document.addEventListener("keydown", handleKeyDown, false);
-document.addEventListener("keyup", handleKeyUp, false);
 var isDragging = false;
 var lastMouseX = 0;
 var lastMouseY = 0;
 var lookSensitivity = 0.01;
-document.addEventListener("mousedown", handleMouseDown, false);
-document.addEventListener("mousemove", handleMouseMove, false);
-document.addEventListener("mouseup", handleMouseUp, false);
 function init() {
     canvas = document.getElementById("frontBuffer");
+    addKeyboardListeners();
+    addMouseListeners();
+    addTouchListeners();
     var canvasStyle = window.getComputedStyle(canvas);
     canvasScaledWidth = parseInt(canvasStyle.width, 10);
     canvasScaledHeight = parseInt(canvasStyle.height, 10);
@@ -135,6 +133,10 @@ function handleKeyDown(event) {
 function handleKeyUp(event) {
     keyStates[event.key.toLowerCase()] = false;
 }
+function addKeyboardListeners() {
+    document.addEventListener("keydown", handleKeyDown, false);
+    document.addEventListener("keyup", handleKeyUp, false);
+}
 function updateCanvasRect() {
     canvasRect = canvas.getBoundingClientRect();
 }
@@ -179,6 +181,50 @@ function changeCameraPosition(deltaTime) {
         moveDir = moveDir.normalized();
         device.moveCamera(moveDir, deltaTime);
     }
+}
+function addMouseListeners() {
+    document.addEventListener("mousedown", handleMouseDown, false);
+    document.addEventListener("mousemove", handleMouseMove, false);
+    document.addEventListener("mouseup", handleMouseUp, false);
+}
+function handleTouchStart(e) {
+    e.preventDefault(); // Prevent scrolling and other default actions
+    updateCanvasRect();
+    var touch = e.touches[0]; // Get the first touch
+    var mouseX = touch.clientX - canvasRect.left;
+    var mouseY = touch.clientY - canvasRect.top;
+    // Check if touch is outside canvas bounds
+    if (mouseX < 0 ||
+        mouseX >= canvasRect.width ||
+        mouseY < 0 ||
+        mouseY >= canvasRect.height)
+        return;
+    isDragging = true;
+    lastMouseX = touch.clientX;
+    lastMouseY = touch.clientY;
+}
+function handleTouchMove(e) {
+    if (!isDragging)
+        return;
+    e.preventDefault(); // Prevent default actions
+    var touch = e.touches[0]; // Update with the movement of the first touch
+    var deltaX = (touch.clientX - lastMouseX) * lookSensitivity;
+    var deltaY = (touch.clientY - lastMouseY) * lookSensitivity;
+    device.rotateCamera(deltaX, deltaY);
+    lastMouseX = touch.clientX;
+    lastMouseY = touch.clientY;
+}
+function handleTouchEnd(e) {
+    isDragging = false;
+}
+function handleTouchCancel(e) {
+    isDragging = false;
+}
+function addTouchListeners() {
+    canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+    canvas.addEventListener("touchend", handleTouchEnd);
+    canvas.addEventListener("touchcancel", handleTouchCancel);
 }
 // ------------------------------------------------------------------
 function computeFps(now) {
